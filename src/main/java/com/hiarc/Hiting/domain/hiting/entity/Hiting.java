@@ -12,8 +12,4 @@ public class Hiting {
     private Long id;
 
 
-
-    """@OneToOne
-    @JoinColumn(name = "studentId", nullable = false)
-    private Student student;"""
 }

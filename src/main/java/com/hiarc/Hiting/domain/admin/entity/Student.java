@@ -34,8 +34,7 @@ public class Student {
         return TierCategory.fromLeveltoEnum(this.tier_level);
     }
 
-"""    @OneToOne
-    private Hiting hiting;"""
+
 
 
 }
