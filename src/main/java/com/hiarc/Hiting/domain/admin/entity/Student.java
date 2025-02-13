@@ -1,10 +1,10 @@
 package com.hiarc.Hiting.domain.admin.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -19,6 +19,8 @@ public class Student {
     private String tier;
     private String handle;
     private String div;
-    private String hitingStart;
+
+    @CreatedDate
+    private LocalDate hitingStart;
 
 }
