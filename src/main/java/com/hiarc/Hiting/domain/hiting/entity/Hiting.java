@@ -29,7 +29,7 @@ public class Hiting {
     @JoinColumn(name = "studentId")
     private Student student;
 
-    @OneToOne(mappedBy = "solved", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "hiting", cascade = CascadeType.ALL, orphanRemoval = true)
     private Solved solved;
 
 

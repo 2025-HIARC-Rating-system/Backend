@@ -20,9 +20,9 @@ public class Event {
     private int tierCount;
     private int eventHiting;
 
-
     @OneToOne
     @JoinColumn(name = "studentId")
     private Student student;
+
 
 }

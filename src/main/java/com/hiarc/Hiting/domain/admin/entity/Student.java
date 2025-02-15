@@ -42,13 +42,13 @@ public class Student {
 
 
     //다른 그룹과의 관계
-    @OneToOne(mappedBy = "hiting", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
     private Hiting hiting;
 
-    @OneToOne(mappedBy = "streak", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
     private Streak streak;
 
-    @OneToOne(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
     private Event event;
 
 
