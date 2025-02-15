@@ -7,7 +7,7 @@ import jakarta.persistence.Id;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -17,10 +17,10 @@ public class Date {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LocalDate seasonStart;
-    private LocalDate seasonEnd;
-    private LocalDate eventStart;
-    private LocalDate eventEnd;
+    private LocalDateTime seasonStart;
+    private LocalDateTime seasonEnd;
+    private LocalDateTime eventStart;
+    private LocalDateTime eventEnd;
 
 
 }
