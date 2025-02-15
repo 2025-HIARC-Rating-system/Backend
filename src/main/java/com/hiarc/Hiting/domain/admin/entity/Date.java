@@ -16,9 +16,11 @@ public class Date {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private LocalDate seasonStart;
     private LocalDate seasonEnd;
     private LocalDate eventStart;
     private LocalDate eventEnd;
+
 
 }

@@ -42,6 +42,8 @@ public enum TierCategory {
     private final String tier;
     private final int tierRating;
 
+    //getLevel()이런거 getter있어서 사용 가능
+
     // 숫자로 Enum 찾기 (level → Enum 변환)
     public static TierCategory fromLeveltoEnum(int level) {
         for (TierCategory tier : values()) {
