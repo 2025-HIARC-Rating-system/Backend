@@ -12,6 +12,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDate;
 
 @Getter
+@Setter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name="student")
@@ -25,10 +26,10 @@ public class Student {
 
     @Column(nullable = false)
     private String name;
-    private int tier_level;
+    private int tier_level = 0;
     @Column(nullable = false)
     private String handle;
-    private String div;
+    private int div = 0;
 
     @CreatedDate
     private LocalDate hitingStart;
@@ -37,7 +38,6 @@ public class Student {
     public TierCategory getTier() {
         return TierCategory.fromLeveltoEnum(this.tier_level);
     }
-
 
     //다른 그룹과의 관계
     @OneToOne(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -50,16 +50,12 @@ public class Student {
     private Event event;
 
     @Builder
-    public Student(String name, int tier_level, String handle, String div, LocalDate hitingStart) {
+    public Student(String name, int tier_level, String handle, int div, LocalDate hitingStart) {
         this.name = name;
         this.tier_level = tier_level;
         this.handle = handle;
         this.div = div;
         this.hitingStart = hitingStart;
     }
-
-
-
-
 
 }

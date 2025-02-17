@@ -19,11 +19,11 @@ public class Hiting {
     private Long id;
 
     @ColumnDefault("0")
-    private int dailyHiting;
+    private Integer dailyHiting;
     @ColumnDefault("0")
-    private int totalHiting;
+    private Integer totalHiting;
     @ColumnDefault("0")
-    private int seasonHiting;
+    private Integer seasonHiting;
 
 
     @OneToOne
@@ -34,7 +34,7 @@ public class Hiting {
     private Solved solved;
 
     @Builder
-    public Hiting(int dailyHiting, int totalHiting, int seasonHiting) {
+    public Hiting(Integer dailyHiting, Integer totalHiting, Integer seasonHiting) {
         this.dailyHiting = dailyHiting;
         this.totalHiting = totalHiting;
         this.seasonHiting = seasonHiting;

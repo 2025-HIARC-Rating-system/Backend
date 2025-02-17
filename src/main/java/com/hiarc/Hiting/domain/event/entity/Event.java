@@ -18,8 +18,8 @@ public class Event {
     @Column(name = "eventId")
     private Long id;
 
-    private int tierCount;
-    private int eventHiting;
+    private Integer tierCount;
+    private Integer eventHiting;
 
     @OneToOne
     @JoinColumn(name = "studentId")

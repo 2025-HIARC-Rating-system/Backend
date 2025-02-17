@@ -1,5 +1,6 @@
 package com.hiarc.Hiting.domain.admin.service;
 
+import com.hiarc.Hiting.domain.admin.dto.SolvedResponseTierDTO;
 import com.hiarc.Hiting.domain.admin.dto.StudentRequestDTO;
 import com.hiarc.Hiting.domain.admin.entity.Student;
 import com.hiarc.Hiting.domain.admin.repository.StudentRepository;
@@ -9,6 +10,7 @@ import com.hiarc.Hiting.global.common.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,6 +19,7 @@ import java.util.stream.Collectors;
 public class StudentService {
 
     private final StudentRepository studentRepository;
+    private final SolvedAcService solvedAcService;
 
     public Student addStudent(StudentRequestDTO request) {
         if (studentRepository.existsByHandle(request.getHandle())) {
@@ -46,6 +49,35 @@ public class StudentService {
                 .collect(Collectors.toList());
         return studentRepository.saveAll(students);
     }
+
+    private int calculateDiv(int tier) {
+        if (tier >= 0 && tier <= 10) {
+            return 3;
+        } else if (tier >= 11 && tier <= 15) {
+            return 2;
+        } else if (tier >= 16 && tier <= 30) {
+            return 1;
+        }
+        return 0;
+    }
+
+    public Student updateStudentTierDiv(String studentHandle) throws IOException {
+        Student student = studentRepository.findByHandle(studentHandle)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+
+        int tier = solvedAcService.getTierByHandle(studentHandle);
+
+        student.setTier_level(tier);
+        student.setDiv(calculateDiv(tier));
+
+        return studentRepository.save(student);
+    }
+
+
+
+
+
+
 
 
 
