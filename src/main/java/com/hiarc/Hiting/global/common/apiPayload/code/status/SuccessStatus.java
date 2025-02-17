@@ -15,7 +15,7 @@ public enum SuccessStatus implements BaseCode {
     CREATED(HttpStatus.CREATED, "COMMON201", "생성 완료"),
 
     // 학회원 관련
-    MEMBER_CREATE_SUCCESS(HttpStatus.OK, "MEMBER2001", "학회원 등록 성공"),
+    MEMBER_CREATE_SUCCESS(HttpStatus.CREATED, "MEMBER2001", "학회원 등록 성공"),
     MEMBER_DELETE_SUCCESS(HttpStatus.OK, "MEMBER2002", "학회원 삭제 성공")
 
     ;

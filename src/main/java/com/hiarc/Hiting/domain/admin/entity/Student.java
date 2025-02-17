@@ -25,11 +25,9 @@ public class Student {
 
     @Column(nullable = false)
     private String name;
-    @Column(nullable = false)
     private int tier_level;
     @Column(nullable = false)
     private String handle;
-    @Column(nullable = false)
     private String div;
 
     @CreatedDate
@@ -50,6 +48,15 @@ public class Student {
 
     @OneToOne(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
     private Event event;
+
+    @Builder
+    public Student(String name, int tier_level, String handle, String div, LocalDate hitingStart) {
+        this.name = name;
+        this.tier_level = tier_level;
+        this.handle = handle;
+        this.div = div;
+        this.hitingStart = hitingStart;
+    }
 
 
 

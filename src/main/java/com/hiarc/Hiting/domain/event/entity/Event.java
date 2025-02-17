@@ -4,6 +4,7 @@ import com.hiarc.Hiting.domain.admin.entity.Student;
 import com.hiarc.Hiting.global.enums.TierCategory;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -23,6 +24,12 @@ public class Event {
     @OneToOne
     @JoinColumn(name = "studentId")
     private Student student;
+
+    @Builder
+    public Event(int tierCount, int eventHiting) {
+        this.tierCount = tierCount;
+        this.eventHiting = eventHiting;
+    }
 
 
 }

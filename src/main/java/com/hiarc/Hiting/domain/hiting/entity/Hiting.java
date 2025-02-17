@@ -3,6 +3,7 @@ package com.hiarc.Hiting.domain.hiting.entity;
 import com.hiarc.Hiting.domain.admin.entity.Student;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
@@ -31,6 +32,13 @@ public class Hiting {
 
     @OneToOne(mappedBy = "hiting", cascade = CascadeType.ALL, orphanRemoval = true)
     private Solved solved;
+
+    @Builder
+    public Hiting(int dailyHiting, int totalHiting, int seasonHiting) {
+        this.dailyHiting = dailyHiting;
+        this.totalHiting = totalHiting;
+        this.seasonHiting = seasonHiting;
+    }
 
 
 

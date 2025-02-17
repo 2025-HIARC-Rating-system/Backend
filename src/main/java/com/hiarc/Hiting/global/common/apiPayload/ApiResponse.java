@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.hiarc.Hiting.global.common.apiPayload.code.BaseCode;
 import com.hiarc.Hiting.global.common.apiPayload.code.BaseErrorCode;
+import com.hiarc.Hiting.global.common.apiPayload.code.status.SuccessStatus;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,6 +30,11 @@ public class ApiResponse<T> {
                 code.getReasonHttpStatus().getMessage(),
                 result
         );
+    }
+
+    //성공한 경우 - 반환값 없을때
+    public static <T> ApiResponse<T> onSuccess() {
+        return new ApiResponse<>(true, SuccessStatus.OK.getCode(), SuccessStatus.OK.getMessage(), null);
     }
 
     //실패한 경우

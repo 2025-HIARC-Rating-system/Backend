@@ -3,6 +3,7 @@ package com.hiarc.Hiting.domain.streak.entity;
 import com.hiarc.Hiting.domain.admin.entity.Student;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -26,6 +27,13 @@ public class Streak {
     @OneToOne
     @JoinColumn(name = "studentId")
     private Student student;
+
+    @Builder
+    public Streak(boolean dailyStreak, LocalDate streakStart, LocalDate streakEnd) {
+        this.dailyStreak = dailyStreak;
+        this.streakStart = streakStart;
+        this.streakEnd = streakEnd;
+    }
 
 
 }
