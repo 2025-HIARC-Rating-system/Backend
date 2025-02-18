@@ -3,6 +3,7 @@ package com.hiarc.Hiting.domain.admin.service;
 import com.hiarc.Hiting.domain.admin.dto.SolvedResponseTierDTO;
 import com.hiarc.Hiting.global.common.apiPayload.code.status.ErrorStatus;
 import com.hiarc.Hiting.global.common.exception.GeneralException;
+import com.hiarc.Hiting.global.common.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -20,7 +21,7 @@ public class SolvedAcService {
         SolvedResponseTierDTO tierDTO = restTemplate.getForObject(url, SolvedResponseTierDTO.class);
 
         if (tierDTO == null) {
-            throw new GeneralException(ErrorStatus.MEMBER_NOT_FOUND);
+            throw new NotFoundException(ErrorStatus.MEMBER_NOT_FOUND);
         }
         return tierDTO.getTier();
     }

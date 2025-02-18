@@ -25,7 +25,8 @@ public enum ErrorStatus implements BaseErrorCode {
     OPEN_API_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "OPENAPI5001", "오픈 API 정보 불러오기 실패"),
 
     //날짜 관련
-    INVALID_DATE_FORMAT(HttpStatus.BAD_REQUEST, "DATE4001", "날짜 형식이 올바르지 않습니다.")
+    INVALID_DATE_FORMAT(HttpStatus.BAD_REQUEST, "DATE4001", "날짜 형식이 올바르지 않습니다."),
+    DATE_NOT_FOUND(HttpStatus.NOT_FOUND, "DATE4002", "DATE entity가 존재하지 않습니다.")
 
     ;
 

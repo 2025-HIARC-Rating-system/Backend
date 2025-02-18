@@ -1,25 +1,31 @@
 package com.hiarc.Hiting.domain.admin.service;
 
-import com.hiarc.Hiting.domain.admin.dto.SolvedResponseTierDTO;
+import com.hiarc.Hiting.domain.admin.dto.DateDTO;
 import com.hiarc.Hiting.domain.admin.dto.StudentRequestDTO;
+import com.hiarc.Hiting.domain.admin.entity.Date;
 import com.hiarc.Hiting.domain.admin.entity.Student;
+import com.hiarc.Hiting.domain.admin.repository.DateRepository;
 import com.hiarc.Hiting.domain.admin.repository.StudentRepository;
 import com.hiarc.Hiting.global.common.apiPayload.code.status.ErrorStatus;
 import com.hiarc.Hiting.global.common.exception.DuplicateStudentsException;
 import com.hiarc.Hiting.global.common.exception.GeneralException;
+import com.hiarc.Hiting.global.common.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class StudentService {
+public class AdminService {
 
     private final StudentRepository studentRepository;
     private final SolvedAcService solvedAcService;
+    private final DateRepository dateRepository;
 
     public Student addStudent(StudentRequestDTO request) {
         if (studentRepository.existsByHandle(request.getHandle())) {
@@ -63,7 +69,7 @@ public class StudentService {
 
     public Student updateStudentTierDiv(String studentHandle) throws IOException {
         Student student = studentRepository.findByHandle(studentHandle)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(ErrorStatus.MEMBER_NOT_FOUND));
 
         int tier = solvedAcService.getTierByHandle(studentHandle);
 
@@ -72,6 +78,66 @@ public class StudentService {
 
         return studentRepository.save(student);
     }
+
+    public Date initialSeasonDate(DateDTO request) {
+        validateDateRange(request);
+        return dateRepository.save(request.toEntitySeason());
+    }
+
+    @Transactional
+    public Date updateSeasonDate(DateDTO request) {
+        validateDateRange(request);
+        Date date = dateRepository.findTopByOrderByIdAsc()
+                .orElseThrow(() -> new NotFoundException(ErrorStatus.DATE_NOT_FOUND));
+
+        date.setSeasonStart(request.getStart());
+        date.setSeasonEnd(request.getEnd());
+
+        return dateRepository.save(date);
+    }
+
+    @Transactional
+    public Date updateEventDate(DateDTO request) {
+        validateDateRange(request);
+        Date date = dateRepository.findTopByOrderByIdAsc()
+                .orElseThrow(() -> new NotFoundException(ErrorStatus.DATE_NOT_FOUND));
+
+        date.setEventStart(request.getStart());
+        date.setEventEnd(request.getEnd());
+
+        return dateRepository.save(date);
+    }
+
+    @Transactional
+    public Date updateSeasonEndOnly(DateDTO request) {
+        Date date = dateRepository.findTopByOrderByIdAsc()
+                .orElseThrow(() -> new NotFoundException(ErrorStatus.DATE_NOT_FOUND));
+
+        date.setSeasonEnd(request.getEnd());
+
+        return dateRepository.save(date);
+    }
+
+    @Transactional
+    public Date updateEventEndOnly(DateDTO request) {
+        Date date = dateRepository.findTopByOrderByIdAsc()
+                .orElseThrow(() -> new NotFoundException(ErrorStatus.DATE_NOT_FOUND));
+
+        date.setEventEnd(request.getEnd());
+
+        return dateRepository.save(date);
+    }
+
+    //날짜 순서 검증
+    private void validateDateRange(DateDTO request) {
+
+        if (request.getStart().isAfter(request.getEnd())) {
+            throw new GeneralException(ErrorStatus.INVALID_DATE_FORMAT);
+        }
+    }
+
+
+
 
 
 

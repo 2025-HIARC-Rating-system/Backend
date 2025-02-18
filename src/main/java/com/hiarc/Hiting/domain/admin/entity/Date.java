@@ -7,9 +7,11 @@ import jakarta.persistence.Id;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+@Setter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Date {
@@ -19,15 +21,18 @@ public class Date {
     private Long id;
 
     private LocalDateTime seasonStart;
+    @Setter
     private LocalDateTime seasonEnd;
     private LocalDateTime eventStart;
+    @Setter
     private LocalDateTime eventEnd;
 
     @Builder
-    public Date(String seasonStart, String seasonEnd, String eventStart, String eventEnd) {
-        this.seasonStart = LocalDateTime.parse(seasonStart);
-        this.seasonEnd = LocalDateTime.parse(seasonEnd);
-        this.eventStart = LocalDateTime.parse(eventStart);
-        this.eventEnd = LocalDateTime.parse(eventEnd);
+    public Date(LocalDateTime seasonStart, LocalDateTime seasonEnd, LocalDateTime eventStart, LocalDateTime eventEnd) {
+        this.seasonStart = seasonStart;
+        this.seasonEnd = seasonEnd;
+        this.eventStart = eventStart;
+        this.eventEnd = eventEnd;
     }
+
 }
