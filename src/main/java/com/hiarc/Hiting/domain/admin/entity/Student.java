@@ -2,6 +2,7 @@ package com.hiarc.Hiting.domain.admin.entity;
 
 import com.hiarc.Hiting.domain.event.entity.Event;
 import com.hiarc.Hiting.domain.hiting.entity.Hiting;
+import com.hiarc.Hiting.domain.hiting.entity.Solved;
 import com.hiarc.Hiting.domain.streak.entity.Streak;
 import com.hiarc.Hiting.global.enums.TierCategory;
 import jakarta.persistence.*;
@@ -42,6 +43,9 @@ public class Student {
     //다른 그룹과의 관계
     @OneToOne(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
     private Hiting hiting;
+
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Solved solved;
 
     @OneToOne(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
     private Streak streak;

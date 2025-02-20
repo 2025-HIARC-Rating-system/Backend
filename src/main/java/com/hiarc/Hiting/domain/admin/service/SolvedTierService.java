@@ -2,17 +2,16 @@ package com.hiarc.Hiting.domain.admin.service;
 
 import com.hiarc.Hiting.domain.admin.dto.SolvedResponseTierDTO;
 import com.hiarc.Hiting.global.common.apiPayload.code.status.ErrorStatus;
-import com.hiarc.Hiting.global.common.exception.GeneralException;
 import com.hiarc.Hiting.global.common.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 @Service
-public class SolvedAcService {
+public class SolvedTierService {
 
     private final RestTemplate restTemplate; //solvedAc 위해
 
-    public SolvedAcService() {
+    public SolvedTierService() {
         this.restTemplate = new RestTemplate();
     }
 

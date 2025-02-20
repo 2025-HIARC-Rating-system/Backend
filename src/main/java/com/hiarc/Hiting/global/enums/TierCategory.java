@@ -51,7 +51,16 @@ public enum TierCategory {
                 return tier;
             }
         }
-        throw new IllegalArgumentException("Unknown tier level: " + level);
+        throw new IllegalArgumentException("Unknown tier level: " + level); // 수정하기
+    }
+
+    public static int fromLeveltoTierRating(int level) {
+        for (TierCategory tier : values()) {
+            if (tier.level == level) {
+                return tier.tierRating;
+            }
+        }
+        throw new IllegalArgumentException("Unknown tier level: " + level); // 수정하기
     }
 
 }

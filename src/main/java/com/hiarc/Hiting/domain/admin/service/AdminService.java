@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,7 +23,7 @@ import java.util.stream.Collectors;
 public class AdminService {
 
     private final StudentRepository studentRepository;
-    private final SolvedAcService solvedAcService;
+    private final SolvedTierService solvedAcService;
     private final DateRepository dateRepository;
 
     public Student addStudent(StudentRequestDTO request) {

@@ -30,7 +30,7 @@ public class Hiting {
     @JoinColumn(name = "studentId")
     private Student student;
 
-    @OneToOne(mappedBy = "hiting", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "hiting", cascade = CascadeType.ALL, orphanRemoval = true)
     private Solved solved;
 
     @Builder

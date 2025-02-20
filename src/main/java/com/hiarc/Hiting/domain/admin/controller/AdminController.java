@@ -30,6 +30,9 @@ public class AdminController {
 
     @PostMapping("/student")
     @Operation(summary = "학회원 1명 등록 API", description = "학회원 정보 등록 + solvedAc에서 티어 가져옴 + div 부여")
+    @io.swagger.v3.oas.annotations.responses.ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공")
+    }) //내용 수정
     public ResponseEntity<ApiResponse<Void>> addStudent(@RequestBody StudentRequestDTO request) {
         try {
             Student saved = adminService.addStudent(request);
@@ -48,6 +51,9 @@ public class AdminController {
 
     @PostMapping("/student/batch")
     @Operation(summary = "학회원 여러명 등록 API", description = "학회원 정보 등록 + solvedAc에서 티어 가져옴 + div 부여")
+    @io.swagger.v3.oas.annotations.responses.ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공")
+    })
     public ResponseEntity<ApiResponse<?>> addStudents(@RequestBody List<StudentRequestDTO> requests) {
         List<Student> savedList;
 
@@ -70,6 +76,9 @@ public class AdminController {
 
     @PutMapping("/tier")
     @Operation(summary = "solvedAc 티어 불러오는 API", description = "div 할당까지")
+    @io.swagger.v3.oas.annotations.responses.ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공")
+    })
     public ResponseEntity<?> updateTierDiv(@RequestParam String handle) {
         try {
             adminService.updateStudentTierDiv(handle);
@@ -83,6 +92,9 @@ public class AdminController {
 
     @PostMapping("/new-season")
     @Operation(summary = "새로운 시즌 기간 등록 API", description = "시즌 기간 등록")
+    @io.swagger.v3.oas.annotations.responses.ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공")
+    })
     public ResponseEntity<ApiResponse<Void>> updateSeasonDate(@RequestBody DateDTO request) {
         try {
             adminService.updateSeasonDate(request);
@@ -97,6 +109,9 @@ public class AdminController {
 
     @PostMapping("/first-season")
     @Operation(summary = "최초 시즌 기간 등록 API", description = "DB 삭제시 최초 1회만")
+    @io.swagger.v3.oas.annotations.responses.ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공")
+    })
     public ResponseEntity<ApiResponse<Void>> updateFirstSeasonDate(@RequestBody DateDTO request) {
         try {
             adminService.initialSeasonDate(request);
@@ -109,6 +124,9 @@ public class AdminController {
 
     @PostMapping("/new-event")
     @Operation(summary = "새로운 이벤트 기간 등록 API", description = "이벤트 기간 등록")
+    @io.swagger.v3.oas.annotations.responses.ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공")
+    })
     public ResponseEntity<ApiResponse<Void>> updateEventDate(@RequestBody DateDTO request) {
         try {
             adminService.updateEventDate(request);
@@ -123,6 +141,9 @@ public class AdminController {
 
     @PostMapping("/new-season/end")
     @Operation(summary = "시즌 중도 중단 API", description = "시즌 끝나는 날짜를 변경하여 중단한다")
+    @io.swagger.v3.oas.annotations.responses.ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공")
+    })
     public ResponseEntity<ApiResponse<Void>> updateSeasonEndOnly(@RequestBody DateDTO request) {
         try {
             adminService.updateSeasonEndOnly(request);
@@ -135,6 +156,9 @@ public class AdminController {
 
     @PostMapping("/new-event/end")
     @Operation(summary = "이벤트 중도 중단 API", description = "이벤트 끝나는 날짜를 변경하여 중단한다")
+    @io.swagger.v3.oas.annotations.responses.ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공")
+    })
     public ResponseEntity<ApiResponse<Void>> updateEventEndOnly(@RequestBody DateDTO request) {
         try {
             adminService.updateEventEndOnly(request);
