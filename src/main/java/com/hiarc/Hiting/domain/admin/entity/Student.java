@@ -48,12 +48,6 @@ public class Student {
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Solved> solved = new ArrayList<>();
 
-    @OneToOne(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Streak streak;
-
-    @OneToOne(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Event event;
-
     @Builder
     public Student(String name, int tier_level, String handle, int div, LocalDate hitingStart) {
         this.name = name;
