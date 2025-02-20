@@ -30,7 +30,7 @@ public class Solved {
     private Hiting hiting;
 
     @ManyToOne
-    @JoinColumn(name = "studentId")
+    @JoinColumn(name = "studentsId")
     private Students students;
 
     @Builder

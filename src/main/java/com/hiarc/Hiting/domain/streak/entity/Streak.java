@@ -25,7 +25,7 @@ public class Streak {
     private LocalDate streakEnd;
 
     @OneToOne
-    @JoinColumn(name = "studentId")
+    @JoinColumn(name = "studentsId")
     private Students students;
 
     @Builder

@@ -9,6 +9,4 @@ import java.util.Optional;
 
 @Repository
 public interface SolvedRepository extends JpaRepository<Solved, Long> {
-    Optional<Solved> findByStudentAndLevel(Students students, Integer level);
-    Optional<Solved> findByStudent(Students students);
 }

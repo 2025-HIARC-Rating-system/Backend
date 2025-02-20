@@ -30,7 +30,7 @@ public class Hiting {
 
 
     @OneToOne
-    @JoinColumn(name = "studentId")
+    @JoinColumn(name = "studentsId")
     private Students students;
 
     @OneToMany(mappedBy = "hiting", cascade = CascadeType.ALL, orphanRemoval = true)
