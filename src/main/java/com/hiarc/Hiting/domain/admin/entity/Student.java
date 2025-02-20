@@ -1,9 +1,7 @@
 package com.hiarc.Hiting.domain.admin.entity;
 
-import com.hiarc.Hiting.domain.event.entity.Event;
 import com.hiarc.Hiting.domain.hiting.entity.Hiting;
 import com.hiarc.Hiting.domain.hiting.entity.Solved;
-import com.hiarc.Hiting.domain.streak.entity.Streak;
 import com.hiarc.Hiting.global.enums.TierCategory;
 import jakarta.persistence.*;
 import lombok.*;

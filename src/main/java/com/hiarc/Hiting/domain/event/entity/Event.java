@@ -1,7 +1,6 @@
 package com.hiarc.Hiting.domain.event.entity;
 
 import com.hiarc.Hiting.domain.admin.entity.Student;
-import com.hiarc.Hiting.global.enums.TierCategory;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;

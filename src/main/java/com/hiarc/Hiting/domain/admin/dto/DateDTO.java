@@ -1,7 +1,6 @@
 package com.hiarc.Hiting.domain.admin.dto;
 
 import com.hiarc.Hiting.domain.admin.entity.Date;
-import com.hiarc.Hiting.domain.admin.entity.Student;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
