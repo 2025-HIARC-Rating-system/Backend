@@ -1,6 +1,6 @@
 package com.hiarc.Hiting.domain.admin.dto;
 
-import com.hiarc.Hiting.domain.admin.entity.Student;
+import com.hiarc.Hiting.domain.admin.entity.Students;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -12,8 +12,8 @@ public class StudentRequestDTO {
     private String name;
     private String handle;
 
-    public Student toEntity() {
-        return Student.builder()
+    public Students toEntity() {
+        return Students.builder()
                 .name(name)
                 .handle(handle)
                 .build();

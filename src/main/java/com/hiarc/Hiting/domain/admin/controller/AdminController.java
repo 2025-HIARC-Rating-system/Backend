@@ -2,7 +2,7 @@ package com.hiarc.Hiting.domain.admin.controller;
 
 import com.hiarc.Hiting.domain.admin.dto.DateDTO;
 import com.hiarc.Hiting.domain.admin.dto.StudentRequestDTO;
-import com.hiarc.Hiting.domain.admin.entity.Student;
+import com.hiarc.Hiting.domain.admin.entity.Students;
 import com.hiarc.Hiting.domain.admin.service.AdminService;
 import com.hiarc.Hiting.global.common.apiPayload.ApiResponse;
 import com.hiarc.Hiting.global.common.apiPayload.code.status.ErrorStatus;
@@ -35,7 +35,7 @@ public class AdminController {
     }) //내용 수정
     public ResponseEntity<ApiResponse<Void>> addStudent(@RequestBody StudentRequestDTO request) {
         try {
-            Student saved = adminService.addStudent(request);
+            Students saved = adminService.addStudent(request);
             adminService.updateStudentTierDiv(saved.getHandle());
             return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.onSuccess());
 
@@ -55,11 +55,11 @@ public class AdminController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공")
     })
     public ResponseEntity<ApiResponse<?>> addStudents(@RequestBody List<StudentRequestDTO> requests) {
-        List<Student> savedList;
+        List<Students> savedList;
 
         try {
             savedList = adminService.addStudents(requests);
-            for (Student s : savedList) { adminService.updateStudentTierDiv(s.getHandle()); }
+            for (Students s : savedList) { adminService.updateStudentTierDiv(s.getHandle()); }
             return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.onSuccess());
 
         } catch (DuplicateStudentsException e) {

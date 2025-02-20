@@ -1,6 +1,6 @@
 package com.hiarc.Hiting.domain.hiting.entity;
 
-import com.hiarc.Hiting.domain.admin.entity.Student;
+import com.hiarc.Hiting.domain.admin.entity.Students;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -31,7 +31,7 @@ public class Hiting {
 
     @OneToOne
     @JoinColumn(name = "studentId")
-    private Student student;
+    private Students students;
 
     @OneToMany(mappedBy = "hiting", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Solved> solved = new ArrayList<>();

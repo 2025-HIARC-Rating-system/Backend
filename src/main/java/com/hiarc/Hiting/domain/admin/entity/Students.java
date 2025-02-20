@@ -17,11 +17,11 @@ import java.util.List;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class) //created date 사용하기 위해
-public class Student {
+public class Students {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "studentId")
+    @Column(name = "studentsId")
     private Long id;
 
     @Column(nullable = false)
@@ -40,14 +40,14 @@ public class Student {
     }
 
     //다른 그룹과의 관계
-    @OneToOne(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "students", cascade = CascadeType.ALL, orphanRemoval = true)
     private Hiting hiting;
 
-    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "students", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Solved> solved = new ArrayList<>();
 
     @Builder
-    public Student(String name, int tier_level, String handle, int div, LocalDate hitingStart) {
+    public Students(String name, int tier_level, String handle, int div, LocalDate hitingStart) {
         this.name = name;
         this.tier_level = tier_level;
         this.handle = handle;

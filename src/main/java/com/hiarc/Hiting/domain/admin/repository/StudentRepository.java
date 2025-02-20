@@ -1,6 +1,6 @@
 package com.hiarc.Hiting.domain.admin.repository;
 
-import com.hiarc.Hiting.domain.admin.entity.Student;
+import com.hiarc.Hiting.domain.admin.entity.Students;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -8,10 +8,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface StudentRepository extends JpaRepository<Student, Long>{
+public interface StudentRepository extends JpaRepository<Students, Long>{
     boolean existsByHandle(String handle);
-    List<Student> findAllByHandleIn(List<String> handles);
-    Optional<Student> findByHandle(String handle);
+    List<Students> findAllByHandleIn(List<String> handles);
+    Optional<Students> findByHandle(String handle);
 
 
 }

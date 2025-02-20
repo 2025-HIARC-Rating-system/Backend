@@ -1,6 +1,6 @@
 package com.hiarc.Hiting.domain.hiting.controller;
 
-import com.hiarc.Hiting.domain.admin.entity.Student;
+import com.hiarc.Hiting.domain.admin.entity.Students;
 import com.hiarc.Hiting.domain.admin.repository.StudentRepository;
 import com.hiarc.Hiting.domain.hiting.dto.RankingDTO;
 import com.hiarc.Hiting.domain.hiting.service.HitingService;
@@ -23,7 +23,7 @@ public class HitingController {
 
     @GetMapping("/ranking")
     public ResponseEntity<Map<String, Object>> getRankingList() {
-        List<Student> students = studentRepository.findAll();
+        List<Students> students = studentRepository.findAll();
 
         List<RankingDTO> rankingList = students.stream()
                 .map(student -> new RankingDTO(

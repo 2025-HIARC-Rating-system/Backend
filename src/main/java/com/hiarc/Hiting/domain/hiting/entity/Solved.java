@@ -1,6 +1,6 @@
 package com.hiarc.Hiting.domain.hiting.entity;
 
-import com.hiarc.Hiting.domain.admin.entity.Student;
+import com.hiarc.Hiting.domain.admin.entity.Students;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -31,7 +31,7 @@ public class Solved {
 
     @ManyToOne
     @JoinColumn(name = "studentId")
-    private Student student;
+    private Students students;
 
     @Builder
     public Solved(int level, int eachSolved) {

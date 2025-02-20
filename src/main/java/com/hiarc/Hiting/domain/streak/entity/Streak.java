@@ -1,6 +1,6 @@
 package com.hiarc.Hiting.domain.streak.entity;
 
-import com.hiarc.Hiting.domain.admin.entity.Student;
+import com.hiarc.Hiting.domain.admin.entity.Students;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -26,7 +26,7 @@ public class Streak {
 
     @OneToOne
     @JoinColumn(name = "studentId")
-    private Student student;
+    private Students students;
 
     @Builder
     public Streak(boolean dailyStreak, LocalDate streakStart, LocalDate streakEnd) {
