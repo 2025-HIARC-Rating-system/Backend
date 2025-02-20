@@ -18,7 +18,6 @@ import java.util.List;
 @Setter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name="student")
 @EntityListeners(AuditingEntityListener.class) //created date 사용하기 위해
 public class Student {
 
