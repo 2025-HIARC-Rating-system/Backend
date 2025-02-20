@@ -17,6 +17,7 @@ import java.util.List;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class) //created date 사용하기 위해
+@Table(name = "students")
 public class Students {
 
     @Id
