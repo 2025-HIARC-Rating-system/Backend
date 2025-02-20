@@ -8,6 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -31,7 +34,7 @@ public class Hiting {
     private Student student;
 
     @OneToMany(mappedBy = "hiting", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Solved solved;
+    private List<Solved> solved = new ArrayList<>();
 
     @Builder
     public Hiting(Integer dailyHiting, Integer totalHiting, Integer seasonHiting) {
