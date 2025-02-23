@@ -9,4 +9,5 @@ import java.util.Optional;
 
 @Repository
 public interface SolvedRepository extends JpaRepository<Solved, Long> {
+
 }
