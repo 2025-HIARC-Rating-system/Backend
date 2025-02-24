@@ -25,9 +25,6 @@ public class Solved {
     @Column(nullable = false)
     private Integer eachSolved;
 
-    @ManyToOne
-    @JoinColumn(name = "hitingId")
-    private Hiting hiting;
 
     @ManyToOne
     @JoinColumn(name = "studentsId")

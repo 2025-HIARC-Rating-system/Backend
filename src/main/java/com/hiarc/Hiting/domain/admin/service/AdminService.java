@@ -55,7 +55,7 @@ public class AdminService {
         return studentRepository.saveAll(students);
     }
 
-    private int calculateDiv(int tier) {
+    private Integer calculateDiv(int tier) {
         if (tier >= 0 && tier <= 10) {
             return 3;
         } else if (tier >= 11 && tier <= 15) {
@@ -66,14 +66,14 @@ public class AdminService {
         return 0;
     }
 
-    public Students updateStudentTierDiv(String studentHandle) throws IOException {
+    public Students changeStudentTierDiv(String studentHandle) throws IOException {
         Students students = studentRepository.findByHandle(studentHandle)
                 .orElseThrow(() -> new NotFoundException(ErrorStatus.MEMBER_NOT_FOUND));
 
         int tier = solvedAcService.getTierByHandle(studentHandle);
 
-        students.setTier_level(tier);
-        students.setDiv(calculateDiv(tier));
+        students.updateTierLevel(tier);
+        students.updateDivNum(calculateDiv(tier));
 
         return studentRepository.save(students);
     }
@@ -84,45 +84,45 @@ public class AdminService {
     }
 
     @Transactional
-    public Date updateSeasonDate(DateDTO request) {
+    public Date changeSeasonDate(DateDTO request) {
         validateDateRange(request);
         Date date = dateRepository.findTopByOrderByIdAsc()
                 .orElseThrow(() -> new NotFoundException(ErrorStatus.DATE_NOT_FOUND));
 
-        date.setSeasonStart(request.getStart());
-        date.setSeasonEnd(request.getEnd());
+        date.updateSeasonStart(request.getStart());
+        date.updateSeasonEnd(request.getEnd());
 
         return dateRepository.save(date);
     }
 
     @Transactional
-    public Date updateEventDate(DateDTO request) {
+    public Date changeEventDate(DateDTO request) {
         validateDateRange(request);
         Date date = dateRepository.findTopByOrderByIdAsc()
                 .orElseThrow(() -> new NotFoundException(ErrorStatus.DATE_NOT_FOUND));
 
-        date.setEventStart(request.getStart());
-        date.setEventEnd(request.getEnd());
+        date.updateSeasonStart((request.getStart()));
+        date.updateEventEnd(request.getEnd());
 
         return dateRepository.save(date);
     }
 
     @Transactional
-    public Date updateSeasonEndOnly(DateDTO request) {
+    public Date changeSeasonEndOnly(DateDTO request) {
         Date date = dateRepository.findTopByOrderByIdAsc()
                 .orElseThrow(() -> new NotFoundException(ErrorStatus.DATE_NOT_FOUND));
 
-        date.setSeasonEnd(request.getEnd());
+        date.updateSeasonEnd(request.getEnd());
 
         return dateRepository.save(date);
     }
 
     @Transactional
-    public Date updateEventEndOnly(DateDTO request) {
+    public Date changeEventEndOnly(DateDTO request) {
         Date date = dateRepository.findTopByOrderByIdAsc()
                 .orElseThrow(() -> new NotFoundException(ErrorStatus.DATE_NOT_FOUND));
 
-        date.setEventEnd(request.getEnd());
+        date.updateEventEnd(request.getEnd());
 
         return dateRepository.save(date);
     }

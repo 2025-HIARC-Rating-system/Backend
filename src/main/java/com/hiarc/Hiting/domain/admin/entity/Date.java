@@ -11,7 +11,7 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-@Setter
+
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Date {
@@ -33,6 +33,26 @@ public class Date {
         this.seasonEnd = seasonEnd;
         this.eventStart = eventStart;
         this.eventEnd = eventEnd;
+    }
+
+    public Date updateSeasonStart(LocalDateTime seasonStart) {
+        this.seasonStart = seasonStart;
+        return this;
+    }
+
+    public Date updateSeasonEnd(LocalDateTime seasonEnd) {
+        this.seasonEnd = seasonEnd;
+        return this;
+    }
+
+    public Date updateEventStart(LocalDateTime eventStart) {
+        this.eventStart = eventStart;
+        return this;
+    }
+
+    public Date updateEventEnd(LocalDateTime eventEnd) {
+        this.eventEnd = eventEnd;
+        return this;
     }
 
 }

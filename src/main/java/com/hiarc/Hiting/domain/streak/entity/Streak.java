@@ -35,5 +35,4 @@ public class Streak {
         this.streakEnd = streakEnd;
     }
 
-
 }

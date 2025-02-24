@@ -10,7 +10,6 @@ import com.hiarc.Hiting.global.common.exception.DuplicateStudentsException;
 import com.hiarc.Hiting.global.common.exception.GeneralException;
 import com.hiarc.Hiting.global.common.exception.NotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,21 +21,18 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "Admin", description = "관리자 페이지 관련 API ") //API 큰묶음
 @RequestMapping("/admin")
-public class AdminController {
+public class AdminController implements AdminConfiguration{
 
     private final AdminService adminService;
 
+    @Override
     @PostMapping("/student")
     @Operation(summary = "학회원 1명 등록 API", description = "학회원 정보 등록 + solvedAc에서 티어 가져옴 + div 부여")
-    @io.swagger.v3.oas.annotations.responses.ApiResponses({
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공")
-    }) //내용 수정
     public ResponseEntity<ApiResponse<Void>> addStudent(@RequestBody StudentRequestDTO request) {
         try {
             Students saved = adminService.addStudent(request);
-            adminService.updateStudentTierDiv(saved.getHandle());
+            adminService.changeStudentTierDiv(saved.getHandle());
             return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.onSuccess());
 
         } catch (GeneralException e) {
@@ -51,15 +47,12 @@ public class AdminController {
 
     @PostMapping("/student/batch")
     @Operation(summary = "학회원 여러명 등록 API", description = "학회원 정보 등록 + solvedAc에서 티어 가져옴 + div 부여")
-    @io.swagger.v3.oas.annotations.responses.ApiResponses({
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공")
-    })
     public ResponseEntity<ApiResponse<?>> addStudents(@RequestBody List<StudentRequestDTO> requests) {
         List<Students> savedList;
 
         try {
             savedList = adminService.addStudents(requests);
-            for (Students s : savedList) { adminService.updateStudentTierDiv(s.getHandle()); }
+            for (Students s : savedList) { adminService.changeStudentTierDiv(s.getHandle()); }
             return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.onSuccess());
 
         } catch (DuplicateStudentsException e) {
@@ -76,12 +69,9 @@ public class AdminController {
 
     @PutMapping("/tier")
     @Operation(summary = "solvedAc 티어 불러오는 API", description = "div 할당까지")
-    @io.swagger.v3.oas.annotations.responses.ApiResponses({
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공")
-    })
-    public ResponseEntity<?> updateTierDiv(@RequestParam String handle) {
+    public ResponseEntity<?> changeTierDivNum(@RequestParam String handle) {
         try {
-            adminService.updateStudentTierDiv(handle);
+            adminService.changeStudentTierDiv(handle);
             return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.onSuccess());
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(ApiResponse.of(ErrorStatus.OPEN_API_FAIL, null));
@@ -92,12 +82,9 @@ public class AdminController {
 
     @PostMapping("/new-season")
     @Operation(summary = "새로운 시즌 기간 등록 API", description = "시즌 기간 등록")
-    @io.swagger.v3.oas.annotations.responses.ApiResponses({
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공")
-    })
-    public ResponseEntity<ApiResponse<Void>> updateSeasonDate(@RequestBody DateDTO request) {
+    public ResponseEntity<ApiResponse<Void>> changeSeasonDate(@RequestBody DateDTO request) {
         try {
-            adminService.updateSeasonDate(request);
+            adminService.changeSeasonDate(request);
             return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.onSuccess());
         } catch (NotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.of(ErrorStatus.DATE_NOT_FOUND, null));
@@ -109,10 +96,7 @@ public class AdminController {
 
     @PostMapping("/first-season")
     @Operation(summary = "최초 시즌 기간 등록 API", description = "DB 삭제시 최초 1회만")
-    @io.swagger.v3.oas.annotations.responses.ApiResponses({
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공")
-    })
-    public ResponseEntity<ApiResponse<Void>> updateFirstSeasonDate(@RequestBody DateDTO request) {
+    public ResponseEntity<ApiResponse<Void>> changeFirstSeasonDate(@RequestBody DateDTO request) {
         try {
             adminService.initialSeasonDate(request);
             return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.onSuccess());
@@ -124,12 +108,9 @@ public class AdminController {
 
     @PostMapping("/new-event")
     @Operation(summary = "새로운 이벤트 기간 등록 API", description = "이벤트 기간 등록")
-    @io.swagger.v3.oas.annotations.responses.ApiResponses({
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공")
-    })
-    public ResponseEntity<ApiResponse<Void>> updateEventDate(@RequestBody DateDTO request) {
+    public ResponseEntity<ApiResponse<Void>> changeEventDate(@RequestBody DateDTO request) {
         try {
-            adminService.updateEventDate(request);
+            adminService.changeEventDate(request);
             return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.onSuccess());
         } catch (NotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.of(ErrorStatus.DATE_NOT_FOUND, null));
@@ -141,12 +122,9 @@ public class AdminController {
 
     @PostMapping("/new-season/end")
     @Operation(summary = "시즌 중도 중단 API", description = "시즌 끝나는 날짜를 변경하여 중단한다")
-    @io.swagger.v3.oas.annotations.responses.ApiResponses({
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공")
-    })
-    public ResponseEntity<ApiResponse<Void>> updateSeasonEndOnly(@RequestBody DateDTO request) {
+    public ResponseEntity<ApiResponse<Void>> changeSeasonEndOnly(@RequestBody DateDTO request) {
         try {
-            adminService.updateSeasonEndOnly(request);
+            adminService.changeSeasonEndOnly(request);
             return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.onSuccess());
         } catch (NotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.of(ErrorStatus.DATE_NOT_FOUND, null));
@@ -156,12 +134,9 @@ public class AdminController {
 
     @PostMapping("/new-event/end")
     @Operation(summary = "이벤트 중도 중단 API", description = "이벤트 끝나는 날짜를 변경하여 중단한다")
-    @io.swagger.v3.oas.annotations.responses.ApiResponses({
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공")
-    })
-    public ResponseEntity<ApiResponse<Void>> updateEventEndOnly(@RequestBody DateDTO request) {
+    public ResponseEntity<ApiResponse<Void>> changeEventEndOnly(@RequestBody DateDTO request) {
         try {
-            adminService.updateEventEndOnly(request);
+            adminService.changeEventEndOnly(request);
             return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.onSuccess());
         } catch (NotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.of(ErrorStatus.DATE_NOT_FOUND, null));

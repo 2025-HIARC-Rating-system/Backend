@@ -33,8 +33,6 @@ public class Hiting {
     @JoinColumn(name = "studentsId")
     private Students students;
 
-    @OneToMany(mappedBy = "hiting", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Solved> solved = new ArrayList<>();
 
     @Builder
     public Hiting(Integer dailyHiting, Integer totalHiting, Integer seasonHiting) {
