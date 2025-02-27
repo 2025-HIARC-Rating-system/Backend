@@ -8,6 +8,7 @@ import com.hiarc.Hiting.domain.admin.repository.StudentRepository;
 import com.hiarc.Hiting.domain.hiting.entity.Event;
 import com.hiarc.Hiting.domain.hiting.entity.Hiting;
 import com.hiarc.Hiting.domain.hiting.entity.Streak;
+import com.hiarc.Hiting.domain.hiting.repository.EventRepository;
 import com.hiarc.Hiting.domain.hiting.repository.HitingRepository;
 import com.hiarc.Hiting.domain.hiting.repository.StreakRepository;
 import com.hiarc.Hiting.domain.hiting.service.SolvedAcService;
@@ -32,7 +33,7 @@ public class AdminService {
     private final SolvedTierService solvedAcService;
     private final RecentSeasonRepository recentSeasonRepository;
     private final HitingRepository hitingRepository;
-    private final SolvedAcService.EventRepository eventRepository;
+    private final EventRepository eventRepository;
     private final StreakRepository streakRepository;
 
 
