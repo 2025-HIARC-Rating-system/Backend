@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -84,9 +85,9 @@ public class AdminController implements AdminConfiguration{
 
     @PostMapping("/season/end")
     @Operation(summary = "시즌 중도 중단 API", description = "시즌 끝나는 날짜를 변경함으로 중단한다. 현재 날짜보다 미래 시간을 입력할 것.")
-    public ResponseEntity<ApiResponse<Void>> changeSeasonEndOnly(@RequestBody DateDTO request) {
+    public ResponseEntity<ApiResponse<Void>> changeSeasonEndOnly(@RequestBody LocalDateTime end) {
         try {
-            dateService.changeSeasonEndOnly(request);
+            dateService.changeSeasonEndOnly(end);
             return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.onSuccess());
         } catch (NotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.of(ErrorStatus.DATE_NOT_FOUND, null));
@@ -96,9 +97,9 @@ public class AdminController implements AdminConfiguration{
 
     @PostMapping("/event/end")
     @Operation(summary = "이벤트 중도 중단 API", description = "이벤트 끝나는 날짜를 변경함으로 중단한다. 현재 날짜보다 미래 시간을 입력할 것.")
-    public ResponseEntity<ApiResponse<Void>> changeEventEndOnly(@RequestBody DateDTO request) {
+    public ResponseEntity<ApiResponse<Void>> changeEventEndOnly(@RequestBody LocalDateTime end) {
         try {
-            dateService.changeEventEndOnly(request);
+            dateService.changeEventEndOnly(end);
             return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.onSuccess());
         } catch (NotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.of(ErrorStatus.DATE_NOT_FOUND, null));

@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -40,12 +41,12 @@ public interface AdminConfiguration {
     @io.swagger.v3.oas.annotations.responses.ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공")
     })
-    ResponseEntity<ApiResponse<Void>> changeSeasonEndOnly(@RequestBody DateDTO request);
+    ResponseEntity<ApiResponse<Void>> changeSeasonEndOnly(@RequestBody LocalDateTime end);
 
     @io.swagger.v3.oas.annotations.responses.ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공")
     })
-    ResponseEntity<ApiResponse<Void>> changeEventEndOnly(@RequestBody DateDTO request);
+    ResponseEntity<ApiResponse<Void>> changeEventEndOnly(@RequestBody LocalDateTime end);
 
     @io.swagger.v3.oas.annotations.responses.ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공")

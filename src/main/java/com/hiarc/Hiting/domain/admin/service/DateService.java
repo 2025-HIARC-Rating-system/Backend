@@ -6,7 +6,10 @@ import com.hiarc.Hiting.domain.admin.repository.DateRepository;
 import com.hiarc.Hiting.global.common.apiPayload.code.status.ErrorStatus;
 import com.hiarc.Hiting.global.common.exception.GeneralException;
 import com.hiarc.Hiting.global.common.exception.NotFoundException;
+import org.springframework.cglib.core.Local;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 
 public class DateService {
 
@@ -42,21 +45,21 @@ public class DateService {
     }
 
     @Transactional
-    public void changeSeasonEndOnly(DateDTO request) {
+    public void changeSeasonEndOnly(LocalDateTime end) {
         Date date = dateRepository.findTopByOrderByIdAsc()
                 .orElseThrow(() -> new NotFoundException(ErrorStatus.DATE_NOT_FOUND));
 
-        date.updateSeasonEnd(request.getEnd());
+        date.updateSeasonEnd(end);
 
         dateRepository.save(date);
     }
 
     @Transactional
-    public void changeEventEndOnly(DateDTO request) {
+    public void changeEventEndOnly(LocalDateTime end) {
         Date date = dateRepository.findTopByOrderByIdAsc()
                 .orElseThrow(() -> new NotFoundException(ErrorStatus.DATE_NOT_FOUND));
 
-        date.updateEventEnd(request.getEnd());
+        date.updateEventEnd(end);
 
         dateRepository.save(date);
     }

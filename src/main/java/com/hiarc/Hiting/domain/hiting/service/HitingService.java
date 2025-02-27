@@ -118,6 +118,7 @@ public class HitingService {
             //streak 함수 진행하기
             // -끝- 값 확인은 그냥 현재 모든 값 불러오는 controller 만들기
 
+
         }
     }
 
