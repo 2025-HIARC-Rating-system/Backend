@@ -30,7 +30,7 @@ public class SolvedAcService {
                 HttpMethod.GET,
                 null,
                 new ParameterizedTypeReference<List<SolvedResponseDTO>>() {}
-        ); //리스트일때 등 받을 수 있음, 구체적 타입으로 받을 수 있음, 리스트 매핑
+        );
         List<SolvedResponseDTO> solvedList = response.getBody();
 
         if (solvedList == null) {

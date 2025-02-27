@@ -10,4 +10,5 @@ import java.util.Optional;
 @Repository
 public interface RecentSeasonRepository extends JpaRepository<RecentSeason, Long> {
     Optional<RecentSeason> findByHandle(String handle);
+
 }
