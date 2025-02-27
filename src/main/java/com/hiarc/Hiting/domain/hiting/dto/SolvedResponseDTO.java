@@ -12,7 +12,7 @@ public class SolvedResponseDTO {
     private Integer solved;
 
     public Solved toEntitySolved() {
-        return Students.builder()
+        return Solved.builder()
                 .level(level)
                 .eachSolved(solved)
                 .build();

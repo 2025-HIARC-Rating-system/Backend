@@ -36,38 +36,6 @@ public class AdminService {
     private final StreakRepository streakRepository;
 
 
-    @Transactional
-    public List<Students> addStudents(List<StudentRequestDTO> requests) { //기존 학생이랑 조회, 등록 ->
-
-        for (StudentRequestDTO studentDTO : requests) {
-            Optional<RecentSeason> isExistingStudent = recentSeasonRepository.findByHandle(studentDTO.getHandle());
-            if (isExistingStudent.isPresent()) {
-
-            } else {
-
-            }
-        }
-
-//        List<String> names = requests.stream()
-//                .map(StudentRequestDTO::getHandle)
-//                .collect(Collectors.toList());
-//        List<Students> existingStudents = studentRepository.findAllByHandleIn(names);
-//
-//        if (!existingStudents.isEmpty()) {
-//            List<String> duplicateHandles = existingStudents.stream()
-//                    .map(Students::getHandle)
-//                    .distinct()
-//                    .collect(Collectors.toList());
-//
-//            throw new DuplicateStudentsException(ErrorStatus.MEMBER_EXIST, duplicateHandles);
-//        }
-//
-//        List<Students> students = requests.stream()
-//                .map(StudentRequestDTO::toEntity)
-//                .collect(Collectors.toList());
-//        return studentRepository.saveAll(students);
-    }
-
     private Integer calculateDiv(int tier) {
         if (tier >= 0 && tier <= 10) {
             return 3;
@@ -91,61 +59,6 @@ public class AdminService {
 
         studentRepository.save(students);
     }
-
-
-    @Transactional
-    public void seasonEndReset(){
-        resetRecentSeason();
-        hitingRepository.resetSeasonHitingForAll();
-
-    }
-
-
-    @Transactional
-    public void newTerm(){
-        resetRecentSeason();
-        studentRepository.deleteAll();
-    }
-
-
-    @Transactional
-    public void resetRecentSeason(){ //recent의 값 다 삭제, 값 다 복사함
-
-        recentSeasonRepository.deleteAll();
-        List<Students> studentsList = studentRepository.findAll();
-        for (Students student : studentsList) {
-            Hiting hiting = hitingRepository.findByStudents(student);
-            Event event = eventRepository.findByStudents(student);
-            Streak streak = streakRepository.findByStudents(student);
-            RecentSeason recent = RecentSeason.builder()
-                    .name(student.getName())
-                    .handle(student.getHandle())
-                    .divNum(student.getDivNum())
-                    .totalHiting(hiting.getTotalHiting())
-                    .eventHiting(event.getEventHiting())
-                    .streakStart(streak.getStreakStart())
-                    .streakEnd(streak.getStreakEnd())
-                    .build();
-
-            recentSeasonRepository.save(recent);
-        }
-
-
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

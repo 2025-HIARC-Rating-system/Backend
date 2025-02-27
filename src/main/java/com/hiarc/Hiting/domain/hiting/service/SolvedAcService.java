@@ -39,10 +39,4 @@ public class SolvedAcService {
 
         return solvedList;
     }
-
-    @Repository
-    public static interface EventRepository extends JpaRepository<Event, Long> {
-
-        Event findByStudents(Students student);
-    }
 }
