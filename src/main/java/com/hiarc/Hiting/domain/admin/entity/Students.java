@@ -1,12 +1,10 @@
 package com.hiarc.Hiting.domain.admin.entity;
 
-import com.hiarc.Hiting.domain.event.entity.Event;
+import com.hiarc.Hiting.domain.hiting.entity.Event;
 import com.hiarc.Hiting.domain.hiting.entity.Hiting;
 import com.hiarc.Hiting.domain.hiting.entity.Solved;
-import com.hiarc.Hiting.domain.streak.entity.Streak;
-import com.hiarc.Hiting.global.enums.TierCategory;
+import com.hiarc.Hiting.domain.hiting.entity.Streak;
 import jakarta.persistence.*;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -56,6 +54,9 @@ public class Students {
     @OneToMany(mappedBy = "students", cascade = CascadeType.ALL)
     private List<Solved> solveds = new ArrayList<>();
 
+    @OneToOne(mappedBy = "students")
+    private RecentSeason recentSeason;
+
 
     @Builder
     public Students(String name, Integer tier_level, String handle, Integer divNum, LocalDate hitingStart) {
@@ -64,17 +65,17 @@ public class Students {
         this.handle = handle;
         this.divNum = (divNum == null) ? 0 : divNum;
         this.hitingStart = hitingStart;
+        this.hiting = new Hiting(0, 0, 0); //학생등록시 Hiting도 등록됨
+        this.hiting.updateStudent(this); //양방향 참조 동기화
     }
 
 
-    public Students updateTierLevel(Integer tier_level) {
+    public void updateTierLevel(Integer tier_level) {
         this.tier_level = tier_level;
-        return this;
     }
 
-    public Students updateDivNum(Integer divNum) {
+    public void updateDivNum(Integer divNum) {
         this.divNum= divNum;
-        return this;
     }
 
 

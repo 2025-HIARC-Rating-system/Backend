@@ -38,25 +38,25 @@ public enum TierCategory {
     RUBY_2(29, "Ruby 2", 75),
     RUBY_1(30, "Ruby 1", 80);
 
-    private final int level;
+    private final Integer level;
     private final String tier;
-    private final int tierRating;
+    private final Integer tierRating;
 
     //getLevel()이런거 getter있어서 사용 가능
 
     // 숫자로 Enum 찾기 (level → Enum 변환)
-    public static TierCategory fromLeveltoEnum(int level) {
+    public static TierCategory fromLeveltoEnum(Integer level) {
         for (TierCategory tier : values()) {
-            if (tier.level == level) {
+            if (tier.level.equals(level)) {
                 return tier;
             }
         }
         throw new IllegalArgumentException("Unknown tier level: " + level); // 수정하기
     }
 
-    public static int fromLeveltoTierRating(int level) {
+    public static int fromLeveltoTierRating(Integer level) {
         for (TierCategory tier : values()) {
-            if (tier.level == level) {
+            if (tier.level.equals(level)) {
                 return tier.tierRating;
             }
         }

@@ -1,17 +1,11 @@
 package com.hiarc.Hiting.domain.admin.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
-
+@Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Date {
@@ -21,10 +15,8 @@ public class Date {
     private Long id;
 
     private LocalDateTime seasonStart;
-    @Setter
     private LocalDateTime seasonEnd;
     private LocalDateTime eventStart;
-    @Setter
     private LocalDateTime eventEnd;
 
     @Builder
@@ -35,24 +27,16 @@ public class Date {
         this.eventEnd = eventEnd;
     }
 
-    public Date updateSeasonStart(LocalDateTime seasonStart) {
+    public void updateSeasonStart(LocalDateTime seasonStart) {
         this.seasonStart = seasonStart;
-        return this;
     }
 
-    public Date updateSeasonEnd(LocalDateTime seasonEnd) {
+    public void updateSeasonEnd(LocalDateTime seasonEnd) {
         this.seasonEnd = seasonEnd;
-        return this;
     }
 
-    public Date updateEventStart(LocalDateTime eventStart) {
-        this.eventStart = eventStart;
-        return this;
-    }
-
-    public Date updateEventEnd(LocalDateTime eventEnd) {
+    public void updateEventEnd(LocalDateTime eventEnd) {
         this.eventEnd = eventEnd;
-        return this;
     }
 
 }

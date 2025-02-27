@@ -1,5 +1,7 @@
 package com.hiarc.Hiting.domain.hiting.dto;
 
+import com.hiarc.Hiting.domain.admin.entity.Students;
+import com.hiarc.Hiting.domain.hiting.entity.Solved;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -8,4 +10,11 @@ import lombok.NoArgsConstructor;
 public class SolvedResponseDTO {
     private Integer level;
     private Integer solved;
+
+    public Solved toEntitySolved() {
+        return Students.builder()
+                .level(level)
+                .eachSolved(solved)
+                .build();
+    }
 }

@@ -1,11 +1,16 @@
 package com.hiarc.Hiting.domain.admin.service;
 
-import com.hiarc.Hiting.domain.admin.dto.DateDTO;
 import com.hiarc.Hiting.domain.admin.dto.StudentRequestDTO;
-import com.hiarc.Hiting.domain.admin.entity.Date;
+import com.hiarc.Hiting.domain.admin.entity.RecentSeason;
 import com.hiarc.Hiting.domain.admin.entity.Students;
-import com.hiarc.Hiting.domain.admin.repository.DateRepository;
+import com.hiarc.Hiting.domain.admin.repository.RecentSeasonRepository;
 import com.hiarc.Hiting.domain.admin.repository.StudentRepository;
+import com.hiarc.Hiting.domain.hiting.entity.Event;
+import com.hiarc.Hiting.domain.hiting.entity.Hiting;
+import com.hiarc.Hiting.domain.hiting.entity.Streak;
+import com.hiarc.Hiting.domain.hiting.repository.HitingRepository;
+import com.hiarc.Hiting.domain.hiting.repository.StreakRepository;
+import com.hiarc.Hiting.domain.hiting.service.SolvedAcService;
 import com.hiarc.Hiting.global.common.apiPayload.code.status.ErrorStatus;
 import com.hiarc.Hiting.global.common.exception.DuplicateStudentsException;
 import com.hiarc.Hiting.global.common.exception.GeneralException;
@@ -16,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,35 +30,42 @@ public class AdminService {
 
     private final StudentRepository studentRepository;
     private final SolvedTierService solvedAcService;
-    private final DateRepository dateRepository;
+    private final RecentSeasonRepository recentSeasonRepository;
+    private final HitingRepository hitingRepository;
+    private final SolvedAcService.EventRepository eventRepository;
+    private final StreakRepository streakRepository;
 
-    public Students addStudent(StudentRequestDTO request) {
-        if (studentRepository.existsByHandle(request.getHandle())) {
-            throw new GeneralException(ErrorStatus.MEMBER_EXIST);
-        }
-        return studentRepository.save(request.toEntity());
-    }
 
-    public List<Students> addStudents(List<StudentRequestDTO> requests) {
+    @Transactional
+    public List<Students> addStudents(List<StudentRequestDTO> requests) { //기존 학생이랑 조회, 등록 ->
 
-        List<String> names = requests.stream()
-                .map(StudentRequestDTO::getHandle)
-                .collect(Collectors.toList());
-        List<Students> existingStudents = studentRepository.findAllByHandleIn(names);
+        for (StudentRequestDTO studentDTO : requests) {
+            Optional<RecentSeason> isExistingStudent = recentSeasonRepository.findByHandle(studentDTO.getHandle());
+            if (isExistingStudent.isPresent()) {
 
-        if (!existingStudents.isEmpty()) {
-            List<String> duplicateHandles = existingStudents.stream()
-                    .map(Students::getHandle)
-                    .distinct()
-                    .collect(Collectors.toList());
+            } else {
 
-            throw new DuplicateStudentsException(ErrorStatus.MEMBER_EXIST, duplicateHandles);
+            }
         }
 
-        List<Students> students = requests.stream()
-                .map(StudentRequestDTO::toEntity)
-                .collect(Collectors.toList());
-        return studentRepository.saveAll(students);
+//        List<String> names = requests.stream()
+//                .map(StudentRequestDTO::getHandle)
+//                .collect(Collectors.toList());
+//        List<Students> existingStudents = studentRepository.findAllByHandleIn(names);
+//
+//        if (!existingStudents.isEmpty()) {
+//            List<String> duplicateHandles = existingStudents.stream()
+//                    .map(Students::getHandle)
+//                    .distinct()
+//                    .collect(Collectors.toList());
+//
+//            throw new DuplicateStudentsException(ErrorStatus.MEMBER_EXIST, duplicateHandles);
+//        }
+//
+//        List<Students> students = requests.stream()
+//                .map(StudentRequestDTO::toEntity)
+//                .collect(Collectors.toList());
+//        return studentRepository.saveAll(students);
     }
 
     private Integer calculateDiv(int tier) {
@@ -66,7 +79,8 @@ public class AdminService {
         return 0;
     }
 
-    public Students changeStudentTierDiv(String studentHandle) throws IOException {
+    @Transactional
+    public void changeStudentTierDiv(String studentHandle) throws IOException {
         Students students = studentRepository.findByHandle(studentHandle)
                 .orElseThrow(() -> new NotFoundException(ErrorStatus.MEMBER_NOT_FOUND));
 
@@ -75,65 +89,51 @@ public class AdminService {
         students.updateTierLevel(tier);
         students.updateDivNum(calculateDiv(tier));
 
-        return studentRepository.save(students);
+        studentRepository.save(students);
     }
 
-    public Date initialSeasonDate(DateDTO request) {
-        validateDateRange(request);
-        return dateRepository.save(request.toEntitySeason());
-    }
 
     @Transactional
-    public Date changeSeasonDate(DateDTO request) {
-        validateDateRange(request);
-        Date date = dateRepository.findTopByOrderByIdAsc()
-                .orElseThrow(() -> new NotFoundException(ErrorStatus.DATE_NOT_FOUND));
+    public void seasonEndReset(){
+        resetRecentSeason();
+        hitingRepository.resetSeasonHitingForAll();
 
-        date.updateSeasonStart(request.getStart());
-        date.updateSeasonEnd(request.getEnd());
-
-        return dateRepository.save(date);
     }
+
 
     @Transactional
-    public Date changeEventDate(DateDTO request) {
-        validateDateRange(request);
-        Date date = dateRepository.findTopByOrderByIdAsc()
-                .orElseThrow(() -> new NotFoundException(ErrorStatus.DATE_NOT_FOUND));
-
-        date.updateSeasonStart((request.getStart()));
-        date.updateEventEnd(request.getEnd());
-
-        return dateRepository.save(date);
+    public void newTerm(){
+        resetRecentSeason();
+        studentRepository.deleteAll();
     }
+
 
     @Transactional
-    public Date changeSeasonEndOnly(DateDTO request) {
-        Date date = dateRepository.findTopByOrderByIdAsc()
-                .orElseThrow(() -> new NotFoundException(ErrorStatus.DATE_NOT_FOUND));
+    public void resetRecentSeason(){ //recent의 값 다 삭제, 값 다 복사함
 
-        date.updateSeasonEnd(request.getEnd());
+        recentSeasonRepository.deleteAll();
+        List<Students> studentsList = studentRepository.findAll();
+        for (Students student : studentsList) {
+            Hiting hiting = hitingRepository.findByStudents(student);
+            Event event = eventRepository.findByStudents(student);
+            Streak streak = streakRepository.findByStudents(student);
+            RecentSeason recent = RecentSeason.builder()
+                    .name(student.getName())
+                    .handle(student.getHandle())
+                    .divNum(student.getDivNum())
+                    .totalHiting(hiting.getTotalHiting())
+                    .eventHiting(event.getEventHiting())
+                    .streakStart(streak.getStreakStart())
+                    .streakEnd(streak.getStreakEnd())
+                    .build();
 
-        return dateRepository.save(date);
-    }
-
-    @Transactional
-    public Date changeEventEndOnly(DateDTO request) {
-        Date date = dateRepository.findTopByOrderByIdAsc()
-                .orElseThrow(() -> new NotFoundException(ErrorStatus.DATE_NOT_FOUND));
-
-        date.updateEventEnd(request.getEnd());
-
-        return dateRepository.save(date);
-    }
-
-    //날짜 순서 검증
-    private void validateDateRange(DateDTO request) {
-
-        if (request.getStart().isAfter(request.getEnd())) {
-            throw new GeneralException(ErrorStatus.INVALID_DATE_FORMAT);
+            recentSeasonRepository.save(recent);
         }
+
+
     }
+
+
 
 
 

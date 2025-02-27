@@ -4,6 +4,7 @@ import com.hiarc.Hiting.domain.admin.dto.DateDTO;
 import com.hiarc.Hiting.domain.admin.dto.StudentRequestDTO;
 import com.hiarc.Hiting.domain.admin.entity.Students;
 import com.hiarc.Hiting.domain.admin.service.AdminService;
+import com.hiarc.Hiting.domain.admin.service.DateService;
 import com.hiarc.Hiting.global.common.apiPayload.ApiResponse;
 import com.hiarc.Hiting.global.common.apiPayload.code.status.ErrorStatus;
 import com.hiarc.Hiting.global.common.exception.DuplicateStudentsException;
@@ -25,6 +26,7 @@ import java.util.List;
 public class AdminController implements AdminConfiguration{
 
     private final AdminService adminService;
+    private final DateService dateService;
 
     @Override
     @PostMapping("/student")
@@ -52,7 +54,7 @@ public class AdminController implements AdminConfiguration{
 
         try {
             savedList = adminService.addStudents(requests);
-            for (Students s : savedList) { adminService.changeStudentTierDiv(s.getHandle()); }
+            for (Students student : savedList) { adminService.changeStudentTierDiv(student.getHandle()); }
             return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.onSuccess());
 
         } catch (DuplicateStudentsException e) {
@@ -80,11 +82,22 @@ public class AdminController implements AdminConfiguration{
         }
     }
 
-    @PostMapping("/new-season")
+    @PostMapping("/first-season")
+    @Operation(summary = "최초 시즌 기간 등록 API", description = "DB 삭제시 최초 1회만 사용")
+    public ResponseEntity<ApiResponse<Void>> changeFirstSeasonDate(@RequestBody DateDTO request) {
+        try {
+            dateService.initialSeasonDate(request);
+            return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.onSuccess());
+        } catch (GeneralException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.of(ErrorStatus.INVALID_DATE_FORMAT, null));
+        }
+    }
+
+    @PostMapping("/season/new")
     @Operation(summary = "새로운 시즌 기간 등록 API", description = "시즌 기간 등록")
     public ResponseEntity<ApiResponse<Void>> changeSeasonDate(@RequestBody DateDTO request) {
         try {
-            adminService.changeSeasonDate(request);
+            dateService.changeSeasonDate(request);
             return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.onSuccess());
         } catch (NotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.of(ErrorStatus.DATE_NOT_FOUND, null));
@@ -94,23 +107,12 @@ public class AdminController implements AdminConfiguration{
 
     }
 
-    @PostMapping("/first-season")
-    @Operation(summary = "최초 시즌 기간 등록 API", description = "DB 삭제시 최초 1회만")
-    public ResponseEntity<ApiResponse<Void>> changeFirstSeasonDate(@RequestBody DateDTO request) {
-        try {
-            adminService.initialSeasonDate(request);
-            return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.onSuccess());
-        } catch (GeneralException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.of(ErrorStatus.INVALID_DATE_FORMAT, null));
-        }
-    }
 
-
-    @PostMapping("/new-event")
+    @PostMapping("/event/new")
     @Operation(summary = "새로운 이벤트 기간 등록 API", description = "이벤트 기간 등록")
     public ResponseEntity<ApiResponse<Void>> changeEventDate(@RequestBody DateDTO request) {
         try {
-            adminService.changeEventDate(request);
+            dateService.changeEventDate(request);
             return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.onSuccess());
         } catch (NotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.of(ErrorStatus.DATE_NOT_FOUND, null));
@@ -120,11 +122,11 @@ public class AdminController implements AdminConfiguration{
 
     }
 
-    @PostMapping("/new-season/end")
+    @PostMapping("/season/end")
     @Operation(summary = "시즌 중도 중단 API", description = "시즌 끝나는 날짜를 변경하여 중단한다")
     public ResponseEntity<ApiResponse<Void>> changeSeasonEndOnly(@RequestBody DateDTO request) {
         try {
-            adminService.changeSeasonEndOnly(request);
+            dateService.changeSeasonEndOnly(request);
             return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.onSuccess());
         } catch (NotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.of(ErrorStatus.DATE_NOT_FOUND, null));
@@ -132,11 +134,11 @@ public class AdminController implements AdminConfiguration{
 
     }
 
-    @PostMapping("/new-event/end")
+    @PostMapping("/event/end")
     @Operation(summary = "이벤트 중도 중단 API", description = "이벤트 끝나는 날짜를 변경하여 중단한다")
     public ResponseEntity<ApiResponse<Void>> changeEventEndOnly(@RequestBody DateDTO request) {
         try {
-            adminService.changeEventEndOnly(request);
+            dateService.changeEventEndOnly(request);
             return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.onSuccess());
         } catch (NotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.of(ErrorStatus.DATE_NOT_FOUND, null));

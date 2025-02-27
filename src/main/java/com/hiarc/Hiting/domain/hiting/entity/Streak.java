@@ -1,4 +1,4 @@
-package com.hiarc.Hiting.domain.event.entity;
+package com.hiarc.Hiting.domain.hiting.entity;
 
 import com.hiarc.Hiting.domain.admin.entity.Students;
 import jakarta.persistence.*;
@@ -7,28 +7,32 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Event {
+public class Streak {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "eventId")
+    @Column(name = "streakId", updatable = false)
     private Long id;
 
-    private Integer tierCount;
-    private Integer eventHiting;
+    private boolean dailyStreak;
+
+    private LocalDate streakStart;
+    private LocalDate streakEnd;
 
     @OneToOne
     @JoinColumn(name = "studentsId")
     private Students students;
 
     @Builder
-    public Event(int tierCount, int eventHiting) {
-        this.tierCount = tierCount;
-        this.eventHiting = eventHiting;
+    public Streak(boolean dailyStreak, LocalDate streakStart, LocalDate streakEnd) {
+        this.dailyStreak = dailyStreak;
+        this.streakStart = streakStart;
+        this.streakEnd = streakEnd;
     }
-
 
 }

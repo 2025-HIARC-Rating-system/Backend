@@ -17,7 +17,7 @@ public class SolvedTierService {
 
     public int getTierByHandle(String handle) {
         String url = "https://solved.ac/api/v3/user/show?handle=" + handle;
-        SolvedResponseTierDTO tierDTO = restTemplate.getForObject(url, SolvedResponseTierDTO.class);
+        SolvedResponseTierDTO tierDTO = restTemplate.getForObject(url, SolvedResponseTierDTO.class); //단일 객체일때
 
         if (tierDTO == null) {
             throw new NotFoundException(ErrorStatus.MEMBER_NOT_FOUND);

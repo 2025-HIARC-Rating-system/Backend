@@ -41,6 +41,21 @@ public class Hiting {
         this.seasonHiting = seasonHiting;
     }
 
+    public void updateStudent(Students student) {
+        this.students = student;
+    }
+
+    public void updateDailyHiting(Integer dailyHiting) {
+        this.dailyHiting = dailyHiting;
+    }
+
+    public void addDailyHiting(Integer delta) {
+        this.dailyHiting += delta;
+    }
+
+    public void updateSeasonHiting(Integer seasonHiting) {
+        this.seasonHiting = seasonHiting;
+    }
 
 
 }

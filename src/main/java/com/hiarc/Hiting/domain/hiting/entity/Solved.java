@@ -31,17 +31,13 @@ public class Solved {
     private Students students;
 
     @Builder
-    public Solved(int level, int eachSolved) {
+    public Solved(Integer level, Integer eachSolved) {
         this.level = level;
         this.eachSolved = eachSolved;
     }
 
-    public void setEachSolved(Integer eachSolved) {
+    public void updateEachSolved(Integer eachSolved) {
         this.eachSolved = eachSolved;
-    }
-
-    public Integer getEachSolved() {
-        return eachSolved;
     }
 
 }
