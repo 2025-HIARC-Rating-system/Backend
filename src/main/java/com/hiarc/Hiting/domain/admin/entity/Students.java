@@ -60,8 +60,9 @@ public class Students {
         this.tier_level = (tier_level == null) ? 0 : tier_level; // 조건값 아니면 defult 값 지정
         this.handle = handle;
         this.divNum = (divNum == null) ? 0 : divNum;
-        this.hiting = new Hiting(0, 0, 0); //학생등록시 Hiting도 등록됨
+        this.hiting = new Hiting(0, 0, 0, 0); //학생등록시 Hiting도 등록됨
         this.streak = new Streak(false, null, null);
+        this.event = new Event(0, 0);
         this.hiting.updateStudent(this); //양방향 참조 동기화
     }
 

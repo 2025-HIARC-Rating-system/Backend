@@ -27,6 +27,8 @@ public class Hiting {
     private Integer totalHiting;
     @ColumnDefault("0")
     private Integer seasonHiting;
+    @ColumnDefault("0")
+    private Integer eventHiting;
 
 
     @OneToOne
@@ -35,10 +37,11 @@ public class Hiting {
 
 
     @Builder
-    public Hiting(Integer dailyHiting, Integer totalHiting, Integer seasonHiting) {
+    public Hiting(Integer dailyHiting, Integer totalHiting, Integer seasonHiting, Integer eventHiting) {
         this.dailyHiting = dailyHiting;
         this.totalHiting = totalHiting;
         this.seasonHiting = seasonHiting;
+        this.eventHiting = eventHiting;
     }
 
     public void updateStudent(Students student) {
@@ -57,6 +60,10 @@ public class Hiting {
         this.totalHiting = totalHiting;
     }
 
+    public void updateEventHiting(Integer eventHiting) {
+        this.eventHiting = eventHiting;
+    }
+
     public void addDailyHiting(Integer delta) {
         this.dailyHiting += delta;
     }
@@ -67,6 +74,10 @@ public class Hiting {
 
     public void addTotalHiting(Integer delta) {
         this.totalHiting += delta;
+    }
+
+    public void addEventHiting(Integer delta){
+        this.eventHiting += delta;
     }
 
 

@@ -31,9 +31,10 @@ public class Solved {
     private Students students;
 
     @Builder
-    public Solved(Integer level, Integer eachSolved) {
+    public Solved(Integer level, Integer eachSolved, Students students) {
         this.level = level;
         this.eachSolved = eachSolved;
+        this.students = students;
     }
 
     public void updateEachSolved(Integer eachSolved) {

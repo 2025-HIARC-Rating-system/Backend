@@ -10,11 +10,4 @@ import lombok.NoArgsConstructor;
 public class SolvedResponseDTO {
     private Integer level;
     private Integer solved;
-
-    public Solved toEntitySolved() {
-        return Solved.builder()
-                .level(level)
-                .eachSolved(solved)
-                .build();
-    }
 }

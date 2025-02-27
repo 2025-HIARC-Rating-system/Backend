@@ -1,3 +1,5 @@
+package com.hiarc.Hiting.domain.hiting.service;
+
 import com.hiarc.Hiting.domain.admin.entity.Date;
 import com.hiarc.Hiting.domain.admin.entity.RecentSeason;
 import com.hiarc.Hiting.domain.admin.entity.Students;
@@ -11,7 +13,7 @@ import com.hiarc.Hiting.domain.hiting.entity.Solved;
 import com.hiarc.Hiting.domain.hiting.repository.EventRepository;
 import com.hiarc.Hiting.domain.hiting.repository.HitingRepository;
 import com.hiarc.Hiting.domain.hiting.repository.SolvedRepository;
-import com.hiarc.Hiting.domain.hiting.service.SolvedAcService;
+import com.hiarc.Hiting.domain.admin.service.SolvedAcService;
 import com.hiarc.Hiting.global.common.apiPayload.code.status.ErrorStatus;
 import com.hiarc.Hiting.global.common.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -72,7 +74,12 @@ public class HitingService {
 
                 if (optional.isEmpty()) {
                     SolvedBefore = 0;
-                    solvedRepository.save(dto.toEntitySolved()); // solved DB값 최초 저장
+                    Solved solved = Solved.builder()
+                            .level(level)
+                            .eachSolved(SolvedNow)
+                            .students(student)
+                            .build();
+                    solvedRepository.save(solved);
                 } else {
                     Solved solved = optional.get(); //컨테이너에서 꺼내기
                     SolvedBefore = solved.getEachSolved(); //이전에 있던 값 불러오기
@@ -91,8 +98,9 @@ public class HitingService {
                 //eventHiting 계산 : 이 함수 로직상 이벤트 기간 내이면 함수 부르기 / eventHiting 값 업데이트하기
                 //이후에는 어떤이벤트인지 확인하는 로직 추가, 걔는 별개 함수로 구현
                 delta = delta *2;
-                Event event = eventRepository.findByStudents(student);
-                event.addEventHiting(delta);
+                hiting.addEventHiting(delta);
+            } else {
+                hiting.updateEventHiting(0);
             }
 
             //daily 변경 : 얘는 오늘인지 확인할 이유가 없다. 00시에 초기화만 잘 해주면 됨

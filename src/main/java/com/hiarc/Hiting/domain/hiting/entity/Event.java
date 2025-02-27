@@ -30,13 +30,14 @@ public class Event {
     private Students students;
 
     @Builder
-    public Event(int tierCount, int eventHiting) {
+    public Event(int tierCount, EventCategory eventCategory) {
         this.tierCount = tierCount;
-        this.eventHiting = eventHiting;
+        this.eventCategory = eventCategory;
     }
 
-    public void addEventHiting(Integer delta){
-        this.eventHiting += delta;
+
+    public void updateStudent(Students student) {
+        this.students = student;
     }
 
 

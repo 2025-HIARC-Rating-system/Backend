@@ -11,27 +11,21 @@ import com.hiarc.Hiting.domain.hiting.entity.Streak;
 import com.hiarc.Hiting.domain.hiting.repository.EventRepository;
 import com.hiarc.Hiting.domain.hiting.repository.HitingRepository;
 import com.hiarc.Hiting.domain.hiting.repository.StreakRepository;
-import com.hiarc.Hiting.domain.hiting.service.HitingService;
-import com.hiarc.Hiting.domain.hiting.service.SolvedAcService;
 import com.hiarc.Hiting.global.common.apiPayload.code.status.ErrorStatus;
-import com.hiarc.Hiting.global.common.exception.DuplicateStudentsException;
-import com.hiarc.Hiting.global.common.exception.GeneralException;
 import com.hiarc.Hiting.global.common.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class AdminService {
 
     private final StudentRepository studentRepository;
-    private final SolvedTierService solvedAcService;
+    private final SolvedAcService solvedAcService;
     private final RecentSeasonRepository recentSeasonRepository;
     private final HitingRepository hitingRepository;
     private final EventRepository eventRepository;
