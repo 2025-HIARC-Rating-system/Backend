@@ -35,4 +35,18 @@ public class Streak {
         this.streakEnd = streakEnd;
     }
 
+    public void updateStudent(Students student) {
+        this.students = student;
+    }
+
+    public void updateStreakStart(LocalDate streakStart) {
+        this.streakStart = streakStart;
+    }
+
+    public void updateStreakEnd(LocalDate streakEnd) {
+        this.streakEnd = streakEnd;
+    }
+
+
+
 }

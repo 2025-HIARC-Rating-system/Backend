@@ -2,8 +2,10 @@ package com.hiarc.Hiting.domain.admin.service;
 
 import com.hiarc.Hiting.domain.admin.dto.SolvedResponseTierDTO;
 import com.hiarc.Hiting.global.common.apiPayload.code.status.ErrorStatus;
+import com.hiarc.Hiting.global.common.exception.GeneralException;
 import com.hiarc.Hiting.global.common.exception.NotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 @Service
@@ -17,12 +19,16 @@ public class SolvedTierService {
 
     public int getTierByHandle(String handle) {
         String url = "https://solved.ac/api/v3/user/show?handle=" + handle;
-        SolvedResponseTierDTO tierDTO = restTemplate.getForObject(url, SolvedResponseTierDTO.class); //단일 객체일때
-
-        if (tierDTO == null) {
-            throw new NotFoundException(ErrorStatus.MEMBER_NOT_FOUND);
+        try {
+            SolvedResponseTierDTO tierDTO = restTemplate.getForObject(url, SolvedResponseTierDTO.class); //단일 객체일때
+            if (tierDTO == null) {
+                throw new NotFoundException(ErrorStatus.MEMBER_NOT_FOUND);
+            }
+            return tierDTO.getTier();
+        } catch (RestClientException e) {
+            throw new GeneralException(ErrorStatus.OPEN_API_FAIL);
         }
-        return tierDTO.getTier();
+
     }
 
 }

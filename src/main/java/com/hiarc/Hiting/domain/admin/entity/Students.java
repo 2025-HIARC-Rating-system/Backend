@@ -17,7 +17,6 @@ import java.util.List;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED) // 어느 곳에서나 객체를 생성할 수 있는 상황을 막기위
-@EntityListeners(AuditingEntityListener.class) //created date 사용하기 위해
 public class Students {
 
     @Id
@@ -36,9 +35,6 @@ public class Students {
 
     //Default
     private Integer divNum = 0;
-
-    @CreatedDate
-    private LocalDate hitingStart;
 
 
     //다른 그룹과의 관계
@@ -59,13 +55,13 @@ public class Students {
 
 
     @Builder
-    public Students(String name, Integer tier_level, String handle, Integer divNum, LocalDate hitingStart) {
+    public Students(String name, Integer tier_level, String handle, Integer divNum) {
         this.name = name;
         this.tier_level = (tier_level == null) ? 0 : tier_level; // 조건값 아니면 defult 값 지정
         this.handle = handle;
         this.divNum = (divNum == null) ? 0 : divNum;
-        this.hitingStart = hitingStart;
         this.hiting = new Hiting(0, 0, 0); //학생등록시 Hiting도 등록됨
+        this.streak = new Streak(false, null, null);
         this.hiting.updateStudent(this); //양방향 참조 동기화
     }
 

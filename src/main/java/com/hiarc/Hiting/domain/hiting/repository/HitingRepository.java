@@ -11,4 +11,8 @@ import org.springframework.stereotype.Repository;
 public interface HitingRepository extends JpaRepository <Hiting, Long> {
     Hiting findByStudents(Students student);
 
+    @Modifying
+    @Query("UPDATE Hiting h SET h.seasonHiting = 0")
+    int resetSeasonHitingForAll();
+
 }

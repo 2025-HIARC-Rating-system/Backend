@@ -28,40 +28,18 @@ public class AdminController implements AdminConfiguration{
     private final AdminService adminService;
     private final DateService dateService;
 
-    @Override
-    @PostMapping("/student")
-    @Operation(summary = "학회원 1명 등록 API", description = "학회원 정보 등록 + solvedAc에서 티어 가져옴 + div 부여")
-    public ResponseEntity<ApiResponse<Void>> addStudent(@RequestBody StudentRequestDTO request) {
+
+    @PostMapping("/reset/term")
+    @Operation(summary = "새로운 학기 시작 및 학생 리스트 추가 API", description = "새로운 학기가 시작될때 학회원 정보 등록. DB 삭제 후 다시 생성. solvedAC에서 티어 받아오고 div계산까지 진행됨.")
+    public ResponseEntity<ApiResponse<Void>> resetTermAndAddStudents(@RequestBody List<StudentRequestDTO> requests) {
+
+        adminService.newTerm();
+
         try {
-            Students saved = adminService.addStudent(request);
-            adminService.changeStudentTierDiv(saved.getHandle());
+            adminService.addStudents(requests);
             return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.onSuccess());
 
         } catch (GeneralException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.of(ErrorStatus.MEMBER_EXIST, null));
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(ApiResponse.of(ErrorStatus.OPEN_API_FAIL, null));
-        }
-        catch (NotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.of(ErrorStatus.MEMBER_NOT_FOUND, null));
-        }
-    }
-
-    @PostMapping("/student/batch")
-    @Operation(summary = "학회원 여러명 등록 API", description = "학회원 정보 등록 + solvedAc에서 티어 가져옴 + div 부여")
-    public ResponseEntity<ApiResponse<?>> addStudents(@RequestBody List<StudentRequestDTO> requests) {
-        List<Students> savedList;
-
-        try {
-            savedList = adminService.addStudents(requests);
-            for (Students student : savedList) { adminService.changeStudentTierDiv(student.getHandle()); }
-            return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.onSuccess());
-
-        } catch (DuplicateStudentsException e) {
-            List<String> duplicateHandles = e.getDuplicateHandles();
-            // "이미 존재하는 학회원입니다." + 중복 이름들
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.of(ErrorStatus.MEMBER_EXIST, duplicateHandles));
-        } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(ApiResponse.of(ErrorStatus.OPEN_API_FAIL, null));
         } catch (NotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.of(ErrorStatus.MEMBER_NOT_FOUND, null));
@@ -69,28 +47,11 @@ public class AdminController implements AdminConfiguration{
 
     }
 
-    @PutMapping("/tier")
-    @Operation(summary = "solvedAc 티어 불러오는 API", description = "div 할당까지")
-    public ResponseEntity<?> changeTierDivNum(@RequestParam String handle) {
-        try {
-            adminService.changeStudentTierDiv(handle);
-            return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.onSuccess());
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(ApiResponse.of(ErrorStatus.OPEN_API_FAIL, null));
-        } catch (NotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.of(ErrorStatus.OPEN_API_FAIL, null));
-        }
-    }
-
-    @PostMapping("/first-season")
-    @Operation(summary = "최초 시즌 기간 등록 API", description = "DB 삭제시 최초 1회만 사용")
-    public ResponseEntity<ApiResponse<Void>> changeFirstSeasonDate(@RequestBody DateDTO request) {
-        try {
-            dateService.initialSeasonDate(request);
-            return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.onSuccess());
-        } catch (GeneralException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.of(ErrorStatus.INVALID_DATE_FORMAT, null));
-        }
+    @PostMapping("/reset/season")
+    @Operation(summary = "시즌 초기화 API", description = "시즌이 끝났을때 실행. 어드민 페이지 중 지난시즌 목록 수정, seasonHiting값 0으로 초기화")
+    public ResponseEntity<ApiResponse<Void>> resetSeason(@RequestBody DateDTO request) {
+        adminService.seasonEndReset();
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.onSuccess());
     }
 
     @PostMapping("/season/new")
@@ -107,7 +68,6 @@ public class AdminController implements AdminConfiguration{
 
     }
 
-
     @PostMapping("/event/new")
     @Operation(summary = "새로운 이벤트 기간 등록 API", description = "이벤트 기간 등록")
     public ResponseEntity<ApiResponse<Void>> changeEventDate(@RequestBody DateDTO request) {
@@ -123,7 +83,7 @@ public class AdminController implements AdminConfiguration{
     }
 
     @PostMapping("/season/end")
-    @Operation(summary = "시즌 중도 중단 API", description = "시즌 끝나는 날짜를 변경하여 중단한다")
+    @Operation(summary = "시즌 중도 중단 API", description = "시즌 끝나는 날짜를 변경함으로 중단한다. 현재 날짜보다 미래 시간을 입력할 것.")
     public ResponseEntity<ApiResponse<Void>> changeSeasonEndOnly(@RequestBody DateDTO request) {
         try {
             dateService.changeSeasonEndOnly(request);
@@ -135,7 +95,7 @@ public class AdminController implements AdminConfiguration{
     }
 
     @PostMapping("/event/end")
-    @Operation(summary = "이벤트 중도 중단 API", description = "이벤트 끝나는 날짜를 변경하여 중단한다")
+    @Operation(summary = "이벤트 중도 중단 API", description = "이벤트 끝나는 날짜를 변경함으로 중단한다. 현재 날짜보다 미래 시간을 입력할 것.")
     public ResponseEntity<ApiResponse<Void>> changeEventEndOnly(@RequestBody DateDTO request) {
         try {
             dateService.changeEventEndOnly(request);
@@ -144,6 +104,17 @@ public class AdminController implements AdminConfiguration{
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.of(ErrorStatus.DATE_NOT_FOUND, null));
         }
 
+    }
+
+    @PostMapping("/first-season")
+    @Operation(summary = "최초 시즌 기간 등록 API", description = "DB 삭제시 최초 1회만 사용")
+    public ResponseEntity<ApiResponse<Void>> changeFirstSeasonDate(@RequestBody DateDTO request) {
+        try {
+            dateService.initialSeasonDate(request);
+            return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.onSuccess());
+        } catch (GeneralException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.of(ErrorStatus.INVALID_DATE_FORMAT, null));
+        }
     }
 
 }

@@ -57,5 +57,9 @@ public class Hiting {
         this.seasonHiting = seasonHiting;
     }
 
+    public void updateTotalHiting(Integer totalHiting) {
+        this.totalHiting = totalHiting;
+    }
+
 
 }

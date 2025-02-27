@@ -19,27 +19,18 @@ public interface AdminConfiguration {
     @io.swagger.v3.oas.annotations.responses.ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공")
     })
-    ResponseEntity<ApiResponse<Void>> addStudent(@RequestBody StudentRequestDTO request);
+    ResponseEntity<ApiResponse<Void>> resetTermAndAddStudents(@RequestBody List<StudentRequestDTO> requests);
 
     @io.swagger.v3.oas.annotations.responses.ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공")
     })
-    ResponseEntity<ApiResponse<?>> addStudents(@RequestBody List<StudentRequestDTO> requests);
-
-    @io.swagger.v3.oas.annotations.responses.ApiResponses({
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공")
-    })
-    ResponseEntity<?> changeTierDivNum(@RequestParam String handle);
+    ResponseEntity<ApiResponse<Void>> resetSeason(@RequestBody DateDTO request);
 
     @io.swagger.v3.oas.annotations.responses.ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공")
     })
     ResponseEntity<ApiResponse<Void>> changeSeasonDate(@RequestBody DateDTO request);
 
-    @io.swagger.v3.oas.annotations.responses.ApiResponses({
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공")
-    })
-    ResponseEntity<ApiResponse<Void>> changeFirstSeasonDate(@RequestBody DateDTO request);
 
     @io.swagger.v3.oas.annotations.responses.ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공")
@@ -55,6 +46,11 @@ public interface AdminConfiguration {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공")
     })
     ResponseEntity<ApiResponse<Void>> changeEventEndOnly(@RequestBody DateDTO request);
+
+    @io.swagger.v3.oas.annotations.responses.ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공")
+    })
+    ResponseEntity<ApiResponse<Void>> changeFirstSeasonDate(@RequestBody DateDTO request);
 
 
 }
