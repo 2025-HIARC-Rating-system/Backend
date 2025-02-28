@@ -14,6 +14,7 @@ import com.hiarc.Hiting.domain.hiting.repository.StreakRepository;
 import com.hiarc.Hiting.global.common.apiPayload.code.status.ErrorStatus;
 import com.hiarc.Hiting.global.common.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -82,6 +83,19 @@ public class AdminService {
         studentRepository.save(students);
     }
 
+    @Scheduled(cron = "0 15 6 * * *", zone = "Asia/Seoul")
+    @Transactional
+    public void changeAllStudentsTierDiv() {
+
+        List<Students> allStudents = studentRepository.findAll();
+        for (Students student : allStudents) {
+            String handle = student.getHandle();
+            int tier = solvedAcService.getTierByHandle(handle);
+            student.updateTierLevel(tier);
+            student.updateDivNum(calculateDiv(tier));
+        }
+    }
+
     @Transactional
     public void resetRecentSeason() {
 
@@ -117,6 +131,8 @@ public class AdminService {
         resetRecentSeason();
         studentRepository.deleteAll();
     }
+
+
 
 
 
