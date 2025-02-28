@@ -36,7 +36,7 @@ public class Event {
     }
 
 
-    public void updateStudent(Students student) {
+    public void updateStudentEvent(Students student) {
         this.students = student;
     }
 

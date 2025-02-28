@@ -7,6 +7,7 @@ import com.hiarc.Hiting.global.common.apiPayload.code.status.ErrorStatus;
 import com.hiarc.Hiting.global.common.exception.GeneralException;
 import com.hiarc.Hiting.global.common.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +19,11 @@ import java.time.LocalDateTime;
 public class DateService {
 
     private DateRepository dateRepository;
+
+    @Autowired
+    public DateService(DateRepository dateRepository) {
+        this.dateRepository = dateRepository;
+    }
 
     public void initialSeasonDate(DateDTO request) {
         validateDateRange(request);

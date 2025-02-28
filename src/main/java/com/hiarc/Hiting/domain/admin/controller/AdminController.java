@@ -52,7 +52,7 @@ public class AdminController implements AdminConfiguration{
 
     @PostMapping("/reset/season")
     @Operation(summary = "시즌 (DB) 초기화 API", description = "시즌이 끝났을때 실행. 어드민 페이지 중 지난시즌 목록 수정, seasonHiting값 0으로 초기화")
-    public ResponseEntity<ApiResponse<Void>> resetSeason(@RequestBody DateDTO request) {
+    public ResponseEntity<ApiResponse<Void>> resetSeason() {
         adminService.seasonEndReset();
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.onSuccess());
     }

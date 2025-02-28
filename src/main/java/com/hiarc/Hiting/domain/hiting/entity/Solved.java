@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"studentId","level"}) // 학생+레벨 유니크
+        @UniqueConstraint(columnNames = {"studentId","level"})
 })
 public class Solved {
 

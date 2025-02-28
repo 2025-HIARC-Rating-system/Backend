@@ -35,7 +35,7 @@ public class Streak {
         this.streakEnd = streakEnd;
     }
 
-    public void updateStudent(Students student) {
+    public void updateStudentStreak(Students student) {
         this.students = student;
     }
 

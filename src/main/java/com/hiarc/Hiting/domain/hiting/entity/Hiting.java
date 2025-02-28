@@ -44,7 +44,7 @@ public class Hiting {
         this.eventHiting = eventHiting;
     }
 
-    public void updateStudent(Students student) {
+    public void updateStudentHiting(Students student) {
         this.students = student;
     }
 

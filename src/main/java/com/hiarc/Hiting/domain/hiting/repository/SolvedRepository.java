@@ -10,5 +10,4 @@ import java.util.Optional;
 @Repository
 public interface SolvedRepository extends JpaRepository<Solved, Long> {
     Optional <Solved> findByStudentsAndLevel(Students students, Integer level);
-    boolean existsByStudentsAndLevel(Students students, Integer level);
 }

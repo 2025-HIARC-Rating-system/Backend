@@ -54,11 +54,18 @@ public class HitingService {
         LocalDateTime today = LocalDateTime.now();
         LocalDate todayDate = today.toLocalDate();
         if (today.getHour() < 6) { todayDate = todayDate.minusDays(1); }
-        boolean isSeason = !today.isBefore(date.getSeasonStart()) && !today.isAfter(date.getSeasonEnd());
-        boolean isEvent = !today.isBefore(date.getEventStart()) && !today.isAfter(date.getEventEnd());
+
+        boolean isSeason = (date.getSeasonStart() != null && date.getSeasonEnd() != null)
+                && !today.isBefore(date.getSeasonStart()) && !today.isAfter(date.getSeasonEnd());
+        boolean isEvent = (date.getEventStart() != null && date.getEventEnd() != null)
+                && !today.isBefore(date.getEventStart()) && !today.isAfter(date.getEventEnd());
 
 
         List<Students> allStudents = studentsRepository.findAll();
+        if (allStudents.isEmpty()) {
+            throw new NotFoundException(ErrorStatus.MEMBER_NOT_FOUND);
+        }
+
         for (Students student : allStudents) {
 
 
@@ -74,10 +81,10 @@ public class HitingService {
                 int SolvedNow = dto.getSolved();
                 int SolvedBefore;
 
-                Optional<Solved> optional = solvedRepository.findByStudentsAndLevel(student, level); //값이 존재하지 않을수도있어서 Optional 사용
+                Optional<Solved> optional = solvedRepository.findByStudentsAndLevel(student, level);
 
                 if (optional.isEmpty()) {
-                    SolvedBefore = 0;
+                    SolvedBefore = SolvedNow;
                     Solved solved = Solved.builder()
                             .level(level)
                             .eachSolved(SolvedNow)
@@ -156,7 +163,7 @@ public class HitingService {
     }
 
 
-    public boolean calculateDailyStreak(Integer level, Integer dailyHiting){
+    public boolean calculateDailyStreak(int level, int dailyHiting){
 
         int streakLimit;
 
@@ -172,9 +179,7 @@ public class HitingService {
             throw new NotFoundException(ErrorStatus.TIER_LEVEL_INVALID);
         }
 
-        if ( dailyHiting >= streakLimit ){
-            return true;
-        } else { return false; }
+        return dailyHiting >= streakLimit;
 
     }
 
