@@ -25,7 +25,7 @@ public interface AdminConfiguration {
     @io.swagger.v3.oas.annotations.responses.ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공")
     })
-    ResponseEntity<ApiResponse<Void>> resetSeason(@RequestBody DateDTO request);
+    ResponseEntity<ApiResponse<Void>> resetSeason();
 
     @io.swagger.v3.oas.annotations.responses.ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공")

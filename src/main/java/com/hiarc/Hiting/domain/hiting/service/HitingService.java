@@ -44,16 +44,18 @@ public class HitingService {
     private final RecentSeasonRepository recentSeasonRepository;
     private final StreakRepository streakRepository;
 
-
+    @Scheduled(fixedRate = 900000)
     @Transactional
     public void realTimeHitings() {
 
-        Optional<Date> dateOptional = dateRepository.findTopByOrderByIdAsc();
-        Date date = dateOptional.orElseThrow(() -> new NotFoundException(ErrorStatus.DATE_NOT_FOUND));
-
         LocalDateTime today = LocalDateTime.now();
+        if ( today.getHour() == 6 ) { return; }
+
         LocalDate todayDate = today.toLocalDate();
         if (today.getHour() < 6) { todayDate = todayDate.minusDays(1); }
+
+        Optional<Date> dateOptional = dateRepository.findTopByOrderByIdAsc();
+        Date date = dateOptional.orElseThrow(() -> new NotFoundException(ErrorStatus.DATE_NOT_FOUND));
 
         boolean isSeason = (date.getSeasonStart() != null && date.getSeasonEnd() != null)
                 && !today.isBefore(date.getSeasonStart()) && !today.isAfter(date.getSeasonEnd());
