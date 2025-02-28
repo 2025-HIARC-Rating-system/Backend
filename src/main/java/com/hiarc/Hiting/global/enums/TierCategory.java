@@ -1,5 +1,7 @@
 package com.hiarc.Hiting.global.enums;
 
+import com.hiarc.Hiting.global.common.apiPayload.code.status.ErrorStatus;
+import com.hiarc.Hiting.global.common.exception.NotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -42,17 +44,6 @@ public enum TierCategory {
     private final String tier;
     private final Integer tierRating;
 
-    //getLevel()이런거 getter있어서 사용 가능
-
-    // 숫자로 Enum 찾기 (level → Enum 변환)
-    public static TierCategory fromLeveltoEnum(Integer level) {
-        for (TierCategory tier : values()) {
-            if (tier.level.equals(level)) {
-                return tier;
-            }
-        }
-        throw new IllegalArgumentException("Unknown tier level: " + level); // 수정하기
-    }
 
     public static int fromLeveltoTierRating(Integer level) {
         for (TierCategory tier : values()) {
@@ -60,7 +51,7 @@ public enum TierCategory {
                 return tier.tierRating;
             }
         }
-        throw new IllegalArgumentException("Unknown tier level: " + level); // 수정하기
+        throw new NotFoundException(ErrorStatus.TIER_LEVEL_INVALID);
     }
 
 }

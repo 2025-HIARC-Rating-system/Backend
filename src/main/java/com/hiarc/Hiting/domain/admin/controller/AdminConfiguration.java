@@ -14,7 +14,7 @@ import java.util.List;
 
 //코드 전반적으로 수정 필요 (예외처리 추가할 것)
 
-@Tag(name = "Admin", description = "관리자 페이지 관련 API ") // Swagger API 큰묶음
+ // Swagger API 큰묶음
 public interface AdminConfiguration {
 
     @io.swagger.v3.oas.annotations.responses.ApiResponses({

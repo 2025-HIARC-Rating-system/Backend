@@ -47,6 +47,10 @@ public class Streak {
         this.streakEnd = streakEnd;
     }
 
+    public void updateDailyStreak(boolean dailyStreak) {
+        this.dailyStreak = dailyStreak;
+    }
+
 
 
 }

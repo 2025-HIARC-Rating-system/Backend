@@ -6,11 +6,15 @@ import com.hiarc.Hiting.domain.admin.repository.DateRepository;
 import com.hiarc.Hiting.global.common.apiPayload.code.status.ErrorStatus;
 import com.hiarc.Hiting.global.common.exception.GeneralException;
 import com.hiarc.Hiting.global.common.exception.NotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.cglib.core.Local;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
+@Service
+@RequiredArgsConstructor
 public class DateService {
 
     private DateRepository dateRepository;

@@ -11,6 +11,7 @@ import com.hiarc.Hiting.global.common.exception.DuplicateStudentsException;
 import com.hiarc.Hiting.global.common.exception.GeneralException;
 import com.hiarc.Hiting.global.common.exception.NotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/admin")
+@Tag(name = "Admin", description = "관리자 페이지 관련 API ")
 public class AdminController implements AdminConfiguration{
 
     private final AdminService adminService;
@@ -49,7 +51,7 @@ public class AdminController implements AdminConfiguration{
     }
 
     @PostMapping("/reset/season")
-    @Operation(summary = "시즌 초기화 API", description = "시즌이 끝났을때 실행. 어드민 페이지 중 지난시즌 목록 수정, seasonHiting값 0으로 초기화")
+    @Operation(summary = "시즌 (DB) 초기화 API", description = "시즌이 끝났을때 실행. 어드민 페이지 중 지난시즌 목록 수정, seasonHiting값 0으로 초기화")
     public ResponseEntity<ApiResponse<Void>> resetSeason(@RequestBody DateDTO request) {
         adminService.seasonEndReset();
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.onSuccess());
