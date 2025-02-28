@@ -15,7 +15,8 @@ public class CorsConfig implements WebMvcConfigurer {
                         "http://localhost:3000",
                         "https://hi-rating-front-end.vercel.app",
                         "https://localhost:8080",
-                        "http://3.36.9.192:8080"
+                        "http://3.36.9.192:8080",
+                        "http://localhost:5173"
                 ) // 허용할 여러 Origin 설정
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH") // 허용할 HTTP 메서드
                 .allowedHeaders("*") // 모든 헤더 허용
