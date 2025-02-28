@@ -20,7 +20,7 @@ public interface ViewConfiguration {
     @io.swagger.v3.oas.annotations.responses.ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공")
     })
-    ResponseEntity<ApiResponse<List<RankingDTO>>> divListView(@PathVariable("div") int div);
+    ResponseEntity<ApiResponse<?>> divListView(@PathVariable("div") int div);
 
     @io.swagger.v3.oas.annotations.responses.ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공")

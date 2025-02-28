@@ -18,7 +18,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -43,16 +45,18 @@ public class ViewController implements ViewConfiguration{
 
     @GetMapping("/rating/{div}")
     @Operation(summary = "디비전별로 목차 반환 API", description = "디비전 상세 페이지. seasonHiting이 가장 큰 사람부터 보여줌")
-    public ResponseEntity<ApiResponse<List<RankingDTO>>> divListView(@PathVariable("div") int div){
+    public ResponseEntity<ApiResponse<?>> divListView(@PathVariable("div") int div){
         try {
-            List<RankingDTO> response = viewService.wrapDivRankData(div);
+            List<RankingDTO> rankingList = viewService.wrapDivRankData(div);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("rankingList", rankingList);
             return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.of(SuccessStatus.OK, response));
         } catch (NotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.of(ErrorStatus.MEMBER_NOT_FOUND, null));
         } catch (GeneralException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.of(ErrorStatus.HITING_NOT_FOUND, null));
         }
-
     }
 
     @GetMapping("/search")
