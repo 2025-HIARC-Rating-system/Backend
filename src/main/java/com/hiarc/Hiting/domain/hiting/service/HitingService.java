@@ -40,6 +40,7 @@ public class HitingService {
     private final SolvedRepository solvedRepository;
     private final StudentRepository studentsRepository;
     private final SolvedAcService solvedAcService;
+    private final StreakService streakService;
     private final DateRepository dateRepository;
     private final RecentSeasonRepository recentSeasonRepository;
     private final StreakRepository streakRepository;
@@ -128,15 +129,18 @@ public class HitingService {
             }
 
 
-            boolean dailyStreak = calculateDailyStreak(student.getTier_level(), hiting.getDailyHiting());
-            streak.updateDailyStreak(dailyStreak);
+            if (!streak.isDailyStreak()){
+                boolean dailyStreak = streakService.calculateDailyStreak(student.getTier_level(), hiting.getDailyHiting());
+                streak.updateDailyStreak(dailyStreak);
 
-            if (dailyStreak){
-                if (streak.getStreakEnd() == null) {
-                    streak.updateStreakStart(todayDate);
+                if (dailyStreak){
+                    if (streak.getStreakEnd() == null) {
+                        streak.updateStreakStart(todayDate);
+                    }
+                    streak.updateStreakEnd(todayDate);
                 }
-                streak.updateStreakEnd(todayDate);
             }
+
 
         }
     }
@@ -150,55 +154,6 @@ public class HitingService {
             hiting.updateDailyHiting(0);
         }
     }
-
-    @Scheduled(cron = "0 0 6 * * *", zone = "Asia/Seoul")
-    @Transactional
-    public void resetDailyStreak() {
-        List<Students> allStudents = studentsRepository.findAll();
-        for (Students student : allStudents) {
-            Streak streak = streakRepository.findByStudents(student);
-            if (!streak.isDailyStreak()) {
-                streak.updateStreakStart(null);
-                streak.updateStreakEnd(null);
-            }
-        }
-    }
-
-
-    public boolean calculateDailyStreak(int level, int dailyHiting){
-
-        int streakLimit;
-
-        if (level >= 0 && level <= 5) {
-            streakLimit = 1;
-        } else if (level >= 6 && level <= 10) {
-            streakLimit = 6;
-        } else if (level >= 11 && level <= 16) {
-            streakLimit = 12;
-        } else if (level >= 17 && level <= 30) {
-            streakLimit = 23;
-        } else {
-            throw new NotFoundException(ErrorStatus.TIER_LEVEL_INVALID);
-        }
-
-        return dailyHiting >= streakLimit;
-
-    }
-
-    public int calculateStreakDays(LocalDate streakStart, LocalDate streakEnd){
-
-        int betweenDays;
-
-        if (streakStart == null || streakEnd == null) {
-            betweenDays=0;
-        } else betweenDays = (int) ChronoUnit.DAYS.between(streakStart, streakEnd);
-
-        return betweenDays;
-    }
-
-
-
-
 
 
 }

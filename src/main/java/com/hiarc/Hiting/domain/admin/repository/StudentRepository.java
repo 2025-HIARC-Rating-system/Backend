@@ -12,6 +12,5 @@ public interface StudentRepository extends JpaRepository<Students, Long>{
     boolean existsByHandle(String handle);
     List<Students> findAllByHandleIn(List<String> handles);
     Optional<Students> findByHandle(String handle);
-
-
+    List<Students> findByDivNum(int div);
 }

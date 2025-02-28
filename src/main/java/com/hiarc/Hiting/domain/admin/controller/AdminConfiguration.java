@@ -3,10 +3,8 @@ package com.hiarc.Hiting.domain.admin.controller;
 import com.hiarc.Hiting.domain.admin.dto.DateDTO;
 import com.hiarc.Hiting.domain.admin.dto.StudentRequestDTO;
 import com.hiarc.Hiting.global.common.apiPayload.ApiResponse;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
 import java.util.List;

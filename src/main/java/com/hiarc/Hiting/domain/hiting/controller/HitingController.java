@@ -1,6 +1,5 @@
 package com.hiarc.Hiting.domain.hiting.controller;
 
-import com.hiarc.Hiting.domain.admin.dto.DateDTO;
 import com.hiarc.Hiting.domain.hiting.service.HitingService;
 import com.hiarc.Hiting.global.common.apiPayload.ApiResponse;
 import com.hiarc.Hiting.global.common.apiPayload.code.status.ErrorStatus;
@@ -33,4 +32,5 @@ public class HitingController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.of(ErrorStatus.MEMBER_NOT_FOUND, null));
         }
     }
+
 }

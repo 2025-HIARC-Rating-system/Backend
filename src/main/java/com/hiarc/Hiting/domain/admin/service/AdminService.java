@@ -46,6 +46,7 @@ public class AdminService {
                         .divNum(isExistingStudent.get().getDivNum())
                         .build();
                 studentRepository.save(newStudent);
+                changeStudentTierDiv(newStudent.getHandle());
                 Hiting hiting = newStudent.getHiting();
                 Streak streak = newStudent.getStreak();
                 hiting.updateTotalHiting(existingStudent.getTotalHiting());
@@ -110,7 +111,7 @@ public class AdminService {
                     .handle(student.getHandle())
                     .divNum(student.getDivNum())
                     .totalHiting(hiting.getTotalHiting())
-                    .eventHiting(event.getEventHiting())
+                    .eventHiting(hiting.getEventHiting())
                     .streakStart(streak.getStreakStart())
                     .streakEnd(streak.getStreakEnd())
                     .build();

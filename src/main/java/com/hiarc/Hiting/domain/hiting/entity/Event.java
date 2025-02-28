@@ -22,7 +22,6 @@ public class Event {
     private EventCategory eventCategory;
 
     private Integer tierCount;
-    private Integer eventHiting;
 
 
     @OneToOne
