@@ -24,7 +24,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "View", description = "뷰 관련 API")
 @RequestMapping
-public class ViewController {
+public class ViewController implements ViewConfiguration{
 
     private final ViewService viewService;
 

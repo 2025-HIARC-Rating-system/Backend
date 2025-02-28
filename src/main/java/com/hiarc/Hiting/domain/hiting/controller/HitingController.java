@@ -1,5 +1,6 @@
 package com.hiarc.Hiting.domain.hiting.controller;
 
+import com.hiarc.Hiting.domain.admin.controller.AdminConfiguration;
 import com.hiarc.Hiting.domain.hiting.service.HitingService;
 import com.hiarc.Hiting.global.common.apiPayload.ApiResponse;
 import com.hiarc.Hiting.global.common.apiPayload.code.status.ErrorStatus;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @Tag(name = "Hiting", description = "계산 관련 API")
 @RequestMapping
-public class HitingController {
+public class HitingController implements HitingConfiguration{
 
     private final HitingService hitingService;
 
