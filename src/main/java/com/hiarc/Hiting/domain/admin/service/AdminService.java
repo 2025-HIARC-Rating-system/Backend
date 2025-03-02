@@ -41,9 +41,9 @@ public class AdminService {
                 RecentSeason existingStudent = isExistingStudent.get();
                 Students newStudent = Students.builder()
                         .name(studentDTO.getName())
-                        .tier_level(isExistingStudent.get().getTier_level())
-                        .handle(isExistingStudent.get().getHandle())
-                        .divNum(isExistingStudent.get().getDivNum())
+                        .tier_level(existingStudent.getTier_level())
+                        .handle(existingStudent.getHandle())
+                        .divNum(existingStudent.getDivNum())
                         .build();
                 studentRepository.save(newStudent);
                 changeStudentTierDiv(newStudent.getHandle());
