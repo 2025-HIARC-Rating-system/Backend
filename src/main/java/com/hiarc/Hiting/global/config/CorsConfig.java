@@ -13,9 +13,6 @@ public class CorsConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOrigins(
                         "https://hi-rating-front-end.vercel.app",
-                        "http://localhost:8080",
-                        "http://43.203.26.246:8080",
-                        "http://43.203.26.246:5000",
                         "http://localhost:5173",
                         "https://hi-rating.co.kr"
                 ) // 허용할 여러 Origin 설정
