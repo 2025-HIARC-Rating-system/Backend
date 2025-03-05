@@ -62,7 +62,7 @@ public class Students {
         this.divNum = (divNum == null) ? 0 : divNum;
         this.hiting = new Hiting(0, 0, 0, 0); //학생등록시 Hiting도 등록됨
         this.streak = new Streak(false, null, null);
-        this.event = new Event(0, null);
+        this.event = new Event(null, null, 0);
         this.hiting.updateStudentHiting(this); //양방향 참조 동기화
         this.streak.updateStudentStreak(this);
         this.event.updateStudentEvent(this);

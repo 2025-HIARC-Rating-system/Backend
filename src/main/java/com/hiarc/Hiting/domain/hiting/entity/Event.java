@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -21,7 +23,8 @@ public class Event {
     @Enumerated(EnumType.STRING)
     private EventCategory eventCategory;
 
-    private Integer tierCount;
+    private String detailCategory;
+    private int tagCount;
 
 
     @OneToOne
@@ -29,9 +32,12 @@ public class Event {
     private Students students;
 
     @Builder
-    public Event(int tierCount, EventCategory eventCategory) {
-        this.tierCount = tierCount;
+    public Event(EventCategory eventCategory, String detailCategory, int tagCount) {
         this.eventCategory = eventCategory;
+
+        this.detailCategory = (detailCategory != null) ? detailCategory : "false";
+        this.tagCount = (detailCategory != null) ? tagCount : 0;
+
     }
 
 

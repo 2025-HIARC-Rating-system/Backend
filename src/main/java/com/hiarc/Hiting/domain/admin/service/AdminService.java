@@ -1,8 +1,10 @@
 package com.hiarc.Hiting.domain.admin.service;
 
 import com.hiarc.Hiting.domain.admin.dto.StudentRequestDTO;
+import com.hiarc.Hiting.domain.admin.entity.Date;
 import com.hiarc.Hiting.domain.admin.entity.RecentSeason;
 import com.hiarc.Hiting.domain.admin.entity.Students;
+import com.hiarc.Hiting.domain.admin.repository.DateRepository;
 import com.hiarc.Hiting.domain.admin.repository.RecentSeasonRepository;
 import com.hiarc.Hiting.domain.admin.repository.StudentRepository;
 import com.hiarc.Hiting.domain.hiting.entity.Event;
@@ -18,6 +20,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,6 +34,7 @@ public class AdminService {
     private final HitingRepository hitingRepository;
     private final EventRepository eventRepository;
     private final StreakRepository streakRepository;
+    private final DateRepository dateRepository;
 
     @Transactional
     public void addStudents(List<StudentRequestDTO> requests) {
@@ -124,6 +128,10 @@ public class AdminService {
     @Transactional
     public void seasonEndReset(){
         resetRecentSeason();
+        Date date = dateRepository.findTopByOrderByIdAsc()
+                .orElseThrow(() -> new NotFoundException(ErrorStatus.DATE_NOT_FOUND));
+        date.updateSeasonStart(LocalDateTime.of(1970, 1, 1, 0, 0, 0));
+        date.updateSeasonEnd(LocalDateTime.of(1970, 1, 2, 0, 0, 0));
         hitingRepository.resetSeasonHitingForAll();
 
     }
@@ -131,12 +139,18 @@ public class AdminService {
     @Transactional
     public void newTerm(){
         resetRecentSeason();
+        Date date = dateRepository.findTopByOrderByIdAsc()
+                .orElseThrow(() -> new NotFoundException(ErrorStatus.DATE_NOT_FOUND));
+        date.updateSeasonStart(LocalDateTime.of(1970, 1, 1, 0, 0, 0));
+        date.updateSeasonEnd(LocalDateTime.of(1970, 1, 2, 0, 0, 0));
+        date.updateEventStart(LocalDateTime.of(1970, 1, 1, 0, 0, 0));
+        date.updateEventEnd(LocalDateTime.of(1970, 1, 2, 0, 0, 0));
         studentRepository.deleteAll();
     }
 
     @Transactional
     public void addOneStudent(StudentRequestDTO request) {
-        // test 용
+        // test
         Optional<RecentSeason> isExistingStudent = recentSeasonRepository.findByHandle(request.getHandle());
         if (isExistingStudent.isPresent()) {
             RecentSeason existingStudent = isExistingStudent.get();

@@ -45,7 +45,7 @@ public interface AdminConfiguration {
     @io.swagger.v3.oas.annotations.responses.ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공")
     })
-    ResponseEntity<ApiResponse<Void>> changeFirstSeasonDate(@RequestBody DateDTO request);
+    ResponseEntity<ApiResponse<Void>> changeFirstSeasonDate();
 
      @io.swagger.v3.oas.annotations.responses.ApiResponses({
              @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공")

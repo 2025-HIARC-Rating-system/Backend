@@ -2,6 +2,7 @@ package com.hiarc.Hiting.domain.admin.controller;
 
 import com.hiarc.Hiting.domain.admin.dto.DateDTO;
 import com.hiarc.Hiting.domain.admin.dto.StudentRequestDTO;
+import com.hiarc.Hiting.domain.admin.entity.Date;
 import com.hiarc.Hiting.domain.admin.entity.Students;
 import com.hiarc.Hiting.domain.admin.service.AdminService;
 import com.hiarc.Hiting.domain.admin.service.DateService;
@@ -113,14 +114,10 @@ public class AdminController implements AdminConfiguration{
     }
 
     @PostMapping("/first-season")
-    @Operation(summary = "최초 시즌 기간 등록 API", description = "DB 삭제시 최초 1회만 사용")
-    public ResponseEntity<ApiResponse<Void>> changeFirstSeasonDate(@RequestBody DateDTO request) {
-        try {
-            dateService.initialSeasonDate(request);
-            return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.onSuccess());
-        } catch (GeneralException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.of(ErrorStatus.INVALID_DATE_FORMAT, null));
-        }
+    @Operation(summary = "최초 시즌 기간 등록 API", description = "DB 삭제시 최초 1회 필요함")
+    public ResponseEntity<ApiResponse<Void>> changeFirstSeasonDate() {
+        Date date = Date.builder().build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.onSuccess());
     }
 
     @PostMapping("/student/test")

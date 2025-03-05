@@ -25,11 +25,6 @@ public class DateService {
         this.dateRepository = dateRepository;
     }
 
-    public void initialSeasonDate(DateDTO request) {
-        validateDateRange(request);
-        dateRepository.save(request.toEntitySeason());
-    }
-
     @Transactional
     public void changeSeasonDate(DateDTO request) {
         validateDateRange(request);
@@ -48,7 +43,7 @@ public class DateService {
         Date date = dateRepository.findTopByOrderByIdAsc()
                 .orElseThrow(() -> new NotFoundException(ErrorStatus.DATE_NOT_FOUND));
 
-        date.updateSeasonStart((request.getStart()));
+        date.updateEventStart((request.getStart()));
         date.updateEventEnd(request.getEnd());
 
         dateRepository.save(date);

@@ -21,10 +21,10 @@ public class Date {
 
     @Builder
     public Date(LocalDateTime seasonStart, LocalDateTime seasonEnd, LocalDateTime eventStart, LocalDateTime eventEnd) {
-        this.seasonStart = seasonStart;
-        this.seasonEnd = seasonEnd;
-        this.eventStart = eventStart;
-        this.eventEnd = eventEnd;
+        this.seasonStart = (seasonStart != null) ? seasonStart : LocalDateTime.of(1970, 1, 1, 0, 0, 0);
+        this.seasonEnd = (seasonEnd != null) ? seasonEnd : LocalDateTime.of(1970, 1, 2, 0, 0, 0);
+        this.eventStart = (eventStart != null) ? eventStart : LocalDateTime.of(1970, 1, 1, 0, 0, 0);
+        this.eventEnd = (eventEnd != null) ? eventEnd : LocalDateTime.of(1970, 1, 2, 0, 0, 0);
     }
 
     public void updateSeasonStart(LocalDateTime seasonStart) {
@@ -33,6 +33,10 @@ public class Date {
 
     public void updateSeasonEnd(LocalDateTime seasonEnd) {
         this.seasonEnd = seasonEnd;
+    }
+
+    public void updateEventStart(LocalDateTime eventStart) {
+        this.eventStart = eventStart;
     }
 
     public void updateEventEnd(LocalDateTime eventEnd) {
