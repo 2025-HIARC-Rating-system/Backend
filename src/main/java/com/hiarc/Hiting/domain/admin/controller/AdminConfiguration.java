@@ -9,10 +9,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.time.LocalDateTime;
 import java.util.List;
 
-
-//코드 전반적으로 수정 필요 (예외처리 추가할 것)
-
- // Swagger API 큰묶음
 public interface AdminConfiguration {
 
     @io.swagger.v3.oas.annotations.responses.ApiResponses({
@@ -50,6 +46,13 @@ public interface AdminConfiguration {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공")
     })
     ResponseEntity<ApiResponse<Void>> changeFirstSeasonDate(@RequestBody DateDTO request);
+
+     @io.swagger.v3.oas.annotations.responses.ApiResponses({
+             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공")
+     })
+     ResponseEntity<ApiResponse<Void>> addOneStudent(@RequestBody StudentRequestDTO request);
+
+
 
 
 }

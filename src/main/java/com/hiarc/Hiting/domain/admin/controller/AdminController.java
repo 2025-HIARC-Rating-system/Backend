@@ -5,6 +5,7 @@ import com.hiarc.Hiting.domain.admin.dto.StudentRequestDTO;
 import com.hiarc.Hiting.domain.admin.entity.Students;
 import com.hiarc.Hiting.domain.admin.service.AdminService;
 import com.hiarc.Hiting.domain.admin.service.DateService;
+import com.hiarc.Hiting.domain.hiting.service.HitingService;
 import com.hiarc.Hiting.global.common.apiPayload.ApiResponse;
 import com.hiarc.Hiting.global.common.apiPayload.code.status.ErrorStatus;
 import com.hiarc.Hiting.global.common.exception.DuplicateStudentsException;
@@ -30,6 +31,7 @@ public class AdminController implements AdminConfiguration{
 
     private final AdminService adminService;
     private final DateService dateService;
+    private final HitingService hitingService;
 
 
     @PostMapping("/reset/term")
@@ -40,6 +42,7 @@ public class AdminController implements AdminConfiguration{
 
         try {
             adminService.addStudents(requests);
+            hitingService.realTimeHitings();
             return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.onSuccess());
 
         } catch (GeneralException e) {
@@ -51,7 +54,7 @@ public class AdminController implements AdminConfiguration{
     }
 
     @PostMapping("/reset/season")
-    @Operation(summary = "시즌 (DB) 초기화 API", description = "시즌이 끝났을때 실행. 어드민 페이지 중 지난시즌 목록 수정, seasonHiting값 0으로 초기화")
+    @Operation(summary = "시즌 DB 초기화 API", description = "시즌이 끝났을때 실행. 어드민 페이지 중 지난시즌 목록 수정, seasonHiting값 0으로 초기화")
     public ResponseEntity<ApiResponse<Void>> resetSeason() {
         adminService.seasonEndReset();
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.onSuccess());
@@ -117,6 +120,20 @@ public class AdminController implements AdminConfiguration{
             return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.onSuccess());
         } catch (GeneralException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.of(ErrorStatus.INVALID_DATE_FORMAT, null));
+        }
+    }
+
+    @PostMapping("/student/test")
+    @Operation(summary = "학회원 1명 등록 API", description = "(테스트용 API) 학회원 정보 등록 + solvedAc에서 티어 가져옴 + div 부여")
+    public ResponseEntity<ApiResponse<Void>> addOneStudent(@RequestBody StudentRequestDTO request) {
+        try {
+            adminService.addOneStudent(request);
+            return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.onSuccess());
+
+        } catch (GeneralException e) {
+            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(ApiResponse.of(ErrorStatus.OPEN_API_FAIL, null));
+        } catch (NotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.of(ErrorStatus.MEMBER_NOT_FOUND, null));
         }
     }
 

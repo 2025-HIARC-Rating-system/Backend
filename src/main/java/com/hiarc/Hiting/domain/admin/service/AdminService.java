@@ -60,6 +60,7 @@ public class AdminService {
         }
     }
 
+
     private Integer calculateDiv(int tier) {
         if (tier >= 0 && tier <= 10) {
             return 3;
@@ -131,6 +132,32 @@ public class AdminService {
     public void newTerm(){
         resetRecentSeason();
         studentRepository.deleteAll();
+    }
+
+    @Transactional
+    public void addOneStudent(StudentRequestDTO request) {
+        // test 용
+        Optional<RecentSeason> isExistingStudent = recentSeasonRepository.findByHandle(request.getHandle());
+        if (isExistingStudent.isPresent()) {
+            RecentSeason existingStudent = isExistingStudent.get();
+            Students newStudent = Students.builder()
+                    .name(request.getName())
+                    .tier_level(existingStudent.getTier_level())
+                    .handle(existingStudent.getHandle())
+                    .divNum(existingStudent.getDivNum())
+                    .build();
+            studentRepository.save(newStudent);
+            changeStudentTierDiv(newStudent.getHandle());
+            Hiting hiting = newStudent.getHiting();
+            Streak streak = newStudent.getStreak();
+            hiting.updateTotalHiting(existingStudent.getTotalHiting());
+            streak.updateStreakStart(existingStudent.getStreakStart());
+            streak.updateStreakEnd(existingStudent.getStreakEnd());
+        } else {
+            Students newStudent = studentRepository.save(request.toEntity());
+            changeStudentTierDiv(newStudent.getHandle());
+        }
+
     }
 
 
