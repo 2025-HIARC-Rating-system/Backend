@@ -71,7 +71,6 @@ public class HitingService {
 
         for (Students student : allStudents) {
 
-
             String handle = student.getHandle();
             List<SolvedResponseDTO> solvedList = solvedAcService.SolvedListByHandle(handle);
             Hiting hiting = hitingRepository.findByStudents(student);
