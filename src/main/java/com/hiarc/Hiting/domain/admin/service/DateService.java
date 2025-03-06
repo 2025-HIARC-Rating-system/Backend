@@ -6,19 +6,26 @@ import com.hiarc.Hiting.domain.admin.repository.DateRepository;
 import com.hiarc.Hiting.global.common.apiPayload.code.status.ErrorStatus;
 import com.hiarc.Hiting.global.common.exception.GeneralException;
 import com.hiarc.Hiting.global.common.exception.NotFoundException;
+import com.hiarc.Hiting.global.enums.DefaultDate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Objects;
+
+import static java.time.LocalDateTime.of;
 
 @Service
 @RequiredArgsConstructor
 public class DateService {
 
     private DateRepository dateRepository;
+    LocalDateTime defaultStart = DefaultDate.DEFAULT_START.getDateTime();
+    LocalDateTime defaultEnd = DefaultDate.DEFAULT_START.getDateTime();
 
     @Autowired
     public DateService(DateRepository dateRepository) {
@@ -76,4 +83,31 @@ public class DateService {
             throw new GeneralException(ErrorStatus.INVALID_DATE_FORMAT);
         }
     }
+
+    public boolean isSeason(LocalDateTime Start, LocalDateTime End) {
+
+
+        LocalDateTime today = LocalDateTime.now();
+
+        if (today.getHour() < 6) { today = today.minusDays(1); }
+
+        boolean isSeason = (!Objects.equals(Start, defaultStart) && !Objects.equals(End, defaultEnd))
+                && !today.isBefore(Start) && !today.isAfter(End);
+
+        return isSeason;
+    }
+
+    public boolean isEvent(LocalDateTime Start, LocalDateTime End) {
+
+
+        LocalDateTime today = LocalDateTime.now();
+
+        if (today.getHour() < 6) { today = today.minusDays(1); }
+
+        boolean isEvent = (!Objects.equals(Start, defaultStart) && !Objects.equals(End, defaultEnd))
+                && !today.isBefore(Start) && !today.isAfter(End);
+
+        return isEvent;
+    }
+
 }

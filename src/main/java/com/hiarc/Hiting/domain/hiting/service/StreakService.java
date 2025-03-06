@@ -1,26 +1,22 @@
 package com.hiarc.Hiting.domain.hiting.service;
 
-import com.hiarc.Hiting.domain.admin.entity.Date;
 import com.hiarc.Hiting.domain.admin.entity.Students;
 import com.hiarc.Hiting.domain.admin.repository.DateRepository;
 import com.hiarc.Hiting.domain.admin.repository.StudentRepository;
-import com.hiarc.Hiting.domain.hiting.dto.view.StreakResponseDTO;
-import com.hiarc.Hiting.domain.hiting.dto.view.WrapStreakListDTO;
 import com.hiarc.Hiting.domain.hiting.entity.Streak;
 import com.hiarc.Hiting.domain.hiting.repository.StreakRepository;
 import com.hiarc.Hiting.global.common.apiPayload.code.status.ErrorStatus;
 import com.hiarc.Hiting.global.common.exception.NotFoundException;
+import com.hiarc.Hiting.global.enums.DefaultDate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+
 
 @Service
 @RequiredArgsConstructor
@@ -30,15 +26,19 @@ public class StreakService {
     private final StreakRepository streakRepository;
     private final DateRepository dateRepository;
 
+    LocalDate defaultStart = DefaultDate.DEFAULT_START.getDateTime().toLocalDate();
+    LocalDate defaultEnd = DefaultDate.DEFAULT_END.getDateTime().toLocalDate();
+
     @Scheduled(cron = "0 0 6 * * *", zone = "Asia/Seoul")
     @Transactional
     public void resetDailyStreak() {
+
         List<Students> allStudents = studentsRepository.findAll();
         for (Students student : allStudents) {
             Streak streak = streakRepository.findByStudents(student);
             if (!streak.isDailyStreak()) {
-                streak.updateStreakStart(null);
-                streak.updateStreakEnd(null);
+                streak.updateStreakStart(defaultStart);
+                streak.updateStreakEnd(defaultEnd);
             }
             streak.updateDailyStreak(false);
         }
@@ -75,6 +75,5 @@ public class StreakService {
 
         return betweenDays;
     }
-
 
 }

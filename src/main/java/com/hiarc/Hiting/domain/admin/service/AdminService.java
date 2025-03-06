@@ -15,6 +15,7 @@ import com.hiarc.Hiting.domain.hiting.repository.HitingRepository;
 import com.hiarc.Hiting.domain.hiting.repository.StreakRepository;
 import com.hiarc.Hiting.global.common.apiPayload.code.status.ErrorStatus;
 import com.hiarc.Hiting.global.common.exception.NotFoundException;
+import com.hiarc.Hiting.global.enums.DefaultDate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -35,6 +36,9 @@ public class AdminService {
     private final EventRepository eventRepository;
     private final StreakRepository streakRepository;
     private final DateRepository dateRepository;
+
+    LocalDateTime defaultStart = DefaultDate.DEFAULT_START.getDateTime();
+    LocalDateTime defaultEnd = DefaultDate.DEFAULT_START.getDateTime();
 
     @Transactional
     public void addStudents(List<StudentRequestDTO> requests) {
@@ -130,8 +134,8 @@ public class AdminService {
         resetRecentSeason();
         Date date = dateRepository.findTopByOrderByIdAsc()
                 .orElseThrow(() -> new NotFoundException(ErrorStatus.DATE_NOT_FOUND));
-        date.updateSeasonStart(LocalDateTime.of(1970, 1, 1, 0, 0, 0));
-        date.updateSeasonEnd(LocalDateTime.of(1970, 1, 2, 0, 0, 0));
+        date.updateSeasonStart(defaultStart);
+        date.updateSeasonEnd(defaultEnd);
         hitingRepository.resetSeasonHitingForAll();
 
     }
@@ -141,10 +145,10 @@ public class AdminService {
         resetRecentSeason();
         Date date = dateRepository.findTopByOrderByIdAsc()
                 .orElseThrow(() -> new NotFoundException(ErrorStatus.DATE_NOT_FOUND));
-        date.updateSeasonStart(LocalDateTime.of(1970, 1, 1, 0, 0, 0));
-        date.updateSeasonEnd(LocalDateTime.of(1970, 1, 2, 0, 0, 0));
-        date.updateEventStart(LocalDateTime.of(1970, 1, 1, 0, 0, 0));
-        date.updateEventEnd(LocalDateTime.of(1970, 1, 2, 0, 0, 0));
+        date.updateSeasonStart(defaultStart);
+        date.updateSeasonEnd(defaultEnd);
+        date.updateEventStart(defaultStart);
+        date.updateEventEnd(defaultEnd);
         studentRepository.deleteAll();
     }
 

@@ -20,7 +20,6 @@ public class Event {
     @Column(name = "eventId")
     private Long id;
 
-    @Enumerated(EnumType.STRING)
     private EventCategory eventCategory;
 
     private String detailCategory;

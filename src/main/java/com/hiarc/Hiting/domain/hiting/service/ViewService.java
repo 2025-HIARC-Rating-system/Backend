@@ -1,5 +1,7 @@
 package com.hiarc.Hiting.domain.hiting.service;
 
+import com.hiarc.Hiting.domain.admin.service.DateService;
+import com.hiarc.Hiting.global.enums.DefaultDate;
 import org.springframework.data.util.Pair;
 import com.hiarc.Hiting.domain.admin.entity.Date;
 import com.hiarc.Hiting.domain.admin.entity.Students;
@@ -21,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -29,13 +32,14 @@ import java.util.stream.Collectors;
 public class ViewService {
 
     private final HitingRepository hitingRepository;
-    private final SolvedRepository solvedRepository;
     private final StudentRepository studentsRepository;
-    private final SolvedAcService solvedAcService;
     private final StreakService streakService;
     private final DateRepository dateRepository;
-    private final RecentSeasonRepository recentSeasonRepository;
     private final StreakRepository streakRepository;
+    private final DateService dateService;
+
+    LocalDate defaultStart = DefaultDate.DEFAULT_START.getDateTime().toLocalDate();
+    LocalDate defaultEnd = DefaultDate.DEFAULT_END.getDateTime().toLocalDate();
 
 
     public WrapStreakListDTO wrapStreakListData(){
@@ -43,11 +47,13 @@ public class ViewService {
         Optional<Date> dateOptional = dateRepository.findTopByOrderByIdAsc();
         Date date = dateOptional.orElseThrow(() -> new NotFoundException(ErrorStatus.DATE_NOT_FOUND));
 
-        LocalDate start = date.getSeasonStart().toLocalDate();
-        LocalDate end = date.getSeasonEnd().toLocalDate();
+        LocalDateTime start = date.getSeasonStart();
+        LocalDate startDate = start.toLocalDate();
+        LocalDateTime end = date.getSeasonEnd();
+        LocalDate endDate = end.toLocalDate();
 
-        boolean isSeason = isSeason(start, end, date);
-        int seasonTotal = calculateSeasonTotal(start, end, isSeason);
+        boolean isSeason = dateService.isSeason(start, end);
+        int seasonTotal = calculateSeasonTotal(startDate, endDate, isSeason);
 
 
         List<Streak> allStreaks = streakRepository.findAll();
@@ -58,15 +64,15 @@ public class ViewService {
                     LocalDate streakStart = streak.getStreakStart();
 
                     int totalStreak = 0;
-                    if (streakStart != null && streakEnd != null) {
+                    if (streakStart != defaultStart && streakEnd != defaultEnd) {
                         totalStreak = streakService.calculateDays(streakStart, streakEnd);
                     }
 
                     int seasonStreak = 0;
                     if (isSeason) {
-                        if ( streakStart != null && streakEnd != null ) {}
-                        if(streakStart.isBefore(start)) {
-                            seasonStreak = streakService.calculateDays(start, streak.getStreakEnd());
+                        if ( streakStart != defaultStart && streakEnd != defaultEnd ) {}
+                        if( streakStart.isBefore(startDate)) {
+                            seasonStreak = streakService.calculateDays(startDate, streak.getStreakEnd());
                         } else { seasonStreak = totalStreak; }
                     }
                     return new StreakResponseDTO(
@@ -121,19 +127,11 @@ public class ViewService {
         if (isSeason) {
             seasonTotal = streakService.calculateDays(Start, End);
         } else { seasonTotal = 0; }
+
         return seasonTotal;
     }
 
-    public boolean isSeason(LocalDate Start, LocalDate End, Date date) {
-
-        LocalDate today = LocalDate.now();
-
-        boolean isSeason = (Start != null && date.getSeasonEnd() != null)
-                && !today.isBefore(Start) && !today.isAfter(End);
-
-        return isSeason;
-    }
-
+    @Transactional(readOnly = true)
     public HandleResponseDTO wrapByHandle(String handle) {
         Students student = studentsRepository.findByHandle(handle)
                 .orElseThrow(() -> new NotFoundException(ErrorStatus.MEMBER_NOT_FOUND));
@@ -143,28 +141,28 @@ public class ViewService {
         Date date = dateRepository.findTopByOrderByIdAsc()
                 .orElseThrow(() -> new GeneralException(ErrorStatus.DATE_NOT_FOUND));
 
-        LocalDate start = date.getSeasonStart().toLocalDate();
-        LocalDate end = date.getSeasonEnd().toLocalDate();
+        LocalDateTime start = date.getSeasonStart();
+        LocalDateTime end = date.getSeasonEnd();
         LocalDate streakStart = streak.getStreakStart();
         LocalDate streakEnd = streak.getStreakEnd();
 
-        boolean isSeason = isSeason(start, end, date);
+
+        boolean isSeason = dateService.isSeason(start, end);
 
         int seasonTotal = 0;
         if (isSeason) {
-            seasonTotal = streakService.calculateDays(start, end);
+            seasonTotal = streakService.calculateDays(start.toLocalDate(), end.toLocalDate());
         }
 
         int totalStreak = 0;
-        if (streakStart != null && streakEnd != null) {
+        if (!Objects.equals(streakStart, defaultStart) && !Objects.equals(streakEnd, defaultEnd)) {
             totalStreak = streakService.calculateDays(streakStart, streakEnd);
         }
 
         int seasonStreak = 0;
-        if (isSeason && streakStart != null && streakEnd != null) {
-            LocalDate seasonStartDate = start;
-            if (streakStart.isBefore(seasonStartDate)) {
-                seasonStreak = streakService.calculateDays(seasonStartDate, streakEnd);
+        if (isSeason && streakStart != defaultStart && streakEnd != defaultEnd) {
+            if (streakStart.isBefore(start.toLocalDate())) {
+                seasonStreak = streakService.calculateDays(start.toLocalDate(), streakEnd);
             } else {
                 seasonStreak = totalStreak;
             }
@@ -222,10 +220,9 @@ public class ViewService {
         Optional<Date> dateOptional = dateRepository.findTopByOrderByIdAsc();
         Date date = dateOptional.orElseThrow(() -> new NotFoundException(ErrorStatus.DATE_NOT_FOUND));
 
-        LocalDate startEvent = date.getEventStart().toLocalDate();
-        LocalDate endEvent = date.getEventEnd().toLocalDate();
+        LocalDateTime startEvent = date.getEventStart();
+        LocalDateTime endEvent = date.getEventEnd();
 
-        LocalDate today = LocalDate.now();
         List<MainRankingDTO> div1List = fiveDivRankData(1);
         List<MainRankingDTO> div2List = fiveDivRankData(2);
         List<MainRankingDTO> div3List = fiveDivRankData(3);
@@ -237,8 +234,7 @@ public class ViewService {
 
         List<MainEventDTO> eventList;
 
-        boolean isEvent = (startEvent != null && date.getSeasonEnd() != null)
-                && !today.isBefore(startEvent) && !today.isAfter(endEvent);
+        boolean isEvent = dateService.isEvent(startEvent, endEvent);
 
         if (isEvent) {
             eventList = eightEventData();
@@ -315,9 +311,4 @@ public class ViewService {
 
     }
 
-
-
-
-
-
-    }
+}

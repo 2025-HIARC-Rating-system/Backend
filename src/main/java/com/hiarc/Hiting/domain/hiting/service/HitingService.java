@@ -10,27 +10,27 @@ import com.hiarc.Hiting.domain.hiting.dto.SolvedResponseDTO;
 import com.hiarc.Hiting.domain.hiting.entity.Hiting;
 import com.hiarc.Hiting.domain.hiting.entity.Solved;
 import com.hiarc.Hiting.domain.hiting.entity.Streak;
-import com.hiarc.Hiting.domain.hiting.repository.EventRepository;
 import com.hiarc.Hiting.domain.hiting.repository.HitingRepository;
 import com.hiarc.Hiting.domain.hiting.repository.SolvedRepository;
 import com.hiarc.Hiting.domain.admin.service.SolvedAcService;
 import com.hiarc.Hiting.domain.hiting.repository.StreakRepository;
 import com.hiarc.Hiting.global.common.apiPayload.code.status.ErrorStatus;
 import com.hiarc.Hiting.global.common.exception.NotFoundException;
+import com.hiarc.Hiting.global.enums.DefaultDate;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.sql.init.dependency.DatabaseInitializationDependencyConfigurer;
+import org.springframework.cglib.core.Local;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static com.hiarc.Hiting.global.enums.TierCategory.fromLeveltoTierRating;
+import static java.time.LocalDateTime.*;
 
 @Service
 @RequiredArgsConstructor
@@ -49,19 +49,20 @@ public class HitingService {
     @Transactional
     public void realTimeHitings() {
 
-        LocalDateTime today = LocalDateTime.now();
-        if ( today.getHour() == 6 ) { return; }
+        LocalDateTime todayDate = LocalDateTime.now();
+        if (todayDate.getHour() < 6) { todayDate = todayDate.minusDays(1); }
 
-        LocalDate todayDate = today.toLocalDate();
-        if (today.getHour() < 6) { todayDate = todayDate.minusDays(1); }
+        LocalDateTime defaultStart = DefaultDate.DEFAULT_START.getDateTime();
+        LocalDateTime defaultEnd = DefaultDate.DEFAULT_START.getDateTime();
+
 
         Optional<Date> dateOptional = dateRepository.findTopByOrderByIdAsc();
         Date date = dateOptional.orElseThrow(() -> new NotFoundException(ErrorStatus.DATE_NOT_FOUND));
 
-        boolean isSeason = (date.getSeasonStart() != null && date.getSeasonEnd() != null)
-                && !today.isBefore(date.getSeasonStart()) && !today.isAfter(date.getSeasonEnd());
-        boolean isEvent = (date.getEventStart() != null && date.getEventEnd() != null)
-                && !today.isBefore(date.getEventStart()) && !today.isAfter(date.getEventEnd());
+        boolean isSeason = (!Objects.equals(date.getSeasonStart(), defaultStart) && !Objects.equals(date.getSeasonEnd(), defaultEnd))
+                && !todayDate.isBefore(date.getSeasonStart()) && !todayDate.isAfter(date.getSeasonEnd());
+        boolean isEvent = (!Objects.equals(date.getSeasonStart(), defaultStart) && !Objects.equals(date.getSeasonEnd(), defaultEnd))
+                && !todayDate.isBefore(date.getEventStart()) && !todayDate.isAfter(date.getEventEnd());
 
 
         List<Students> allStudents = studentsRepository.findAll();
@@ -130,13 +131,13 @@ public class HitingService {
 
             if (!streak.isDailyStreak()){
                 boolean dailyStreak = streakService.calculateDailyStreak(student.getTier_level(), hiting.getDailyHiting());
-                streak.updateDailyStreak(dailyStreak);
 
                 if (dailyStreak){
-                    if (streak.getStreakEnd() == null) {
-                        streak.updateStreakStart(todayDate);
+                    streak.updateDailyStreak(true);
+                    if (streak.getStreakEnd() == defaultEnd.toLocalDate()) {
+                        streak.updateStreakStart(todayDate.toLocalDate());
                     }
-                    streak.updateStreakEnd(todayDate);
+                    streak.updateStreakEnd(todayDate.toLocalDate());
                 }
             }
 
