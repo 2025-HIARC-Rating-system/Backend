@@ -1,6 +1,5 @@
-package com.hiarc.Hiting.domain.hiting.entity;
+package com.hiarc.Hiting.domain.admin.entity;
 
-import com.hiarc.Hiting.domain.admin.entity.Students;
 import com.hiarc.Hiting.global.enums.EventCategory;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -20,29 +19,23 @@ public class Event {
     @Column(name = "eventId")
     private Long id;
 
-    private EventCategory eventCategory;
-
-    private String detailCategory;
     private int tagCount;
-
 
     @OneToOne
     @JoinColumn(name = "studentsId")
     private Students students;
 
+
     @Builder
-    public Event(EventCategory eventCategory, String detailCategory, int tagCount) {
-        this.eventCategory = eventCategory;
-
-        this.detailCategory = (detailCategory != null) ? detailCategory : "false";
-        this.tagCount = (detailCategory != null) ? tagCount : 0;
-
+    public Event(int tagCount) {
+        this.tagCount = tagCount;
     }
-
 
     public void updateStudentEvent(Students student) {
         this.students = student;
     }
+
+    public void updateTagCount(int tagCount) { this.tagCount = tagCount; }
 
 
 }

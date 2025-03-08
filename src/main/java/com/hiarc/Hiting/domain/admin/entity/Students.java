@@ -1,15 +1,13 @@
 package com.hiarc.Hiting.domain.admin.entity;
 
-import com.hiarc.Hiting.domain.hiting.entity.Event;
 import com.hiarc.Hiting.domain.hiting.entity.Hiting;
 import com.hiarc.Hiting.domain.hiting.entity.Solved;
 import com.hiarc.Hiting.domain.hiting.entity.Streak;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,12 +55,12 @@ public class Students {
     @Builder
     public Students(String name, Integer tier_level, String handle, Integer divNum) {
         this.name = name;
-        this.tier_level = (tier_level == null) ? 0 : tier_level; // 조건값 아니면 defult 값 지정
+        this.tier_level = (tier_level == null) ? 0 : tier_level;
         this.handle = handle;
         this.divNum = (divNum == null) ? 0 : divNum;
-        this.hiting = new Hiting(0, 0, 0, 0); //학생등록시 Hiting도 등록됨
-        this.streak = new Streak(false, null, null);
-        this.event = new Event(null, null, 0);
+        this.hiting = new Hiting(0, 0, 0, 0);
+        this.streak = new Streak(false, LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 2));
+        this.event = new Event(0);
         this.hiting.updateStudentHiting(this); //양방향 참조 동기화
         this.streak.updateStudentStreak(this);
         this.event.updateStudentEvent(this);

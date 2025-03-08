@@ -21,6 +21,7 @@ public enum ErrorStatus implements BaseErrorCode {
     MEMBER_INFO_INVALID(HttpStatus.BAD_REQUEST, "MEMBER4003", "학회원 정보 형식이 잘못되었습니다."),
     MEMBER_DELETE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "MEMBER5002", "학회원 삭제에 실패하였습니다."),
     HITING_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMBER4004", "HITING entity가 존재하지 않습니다."),
+    EVENT_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMBER4005", "EVENT entity가 존재하지 않습니다."),
 
     //solvedAC정보 불러오기 관련
     OPEN_API_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "OPENAPI5001", "오픈 API 정보 불러오기 실패"),
@@ -31,6 +32,7 @@ public enum ErrorStatus implements BaseErrorCode {
 
     //enum관련
     TIER_LEVEL_INVALID(HttpStatus.BAD_REQUEST, "ENUM4001", "존재하지 않는 티어 레벨입니다."),
+    TAG_INVALID(HttpStatus.NOT_FOUND, "ENUM4002", "적절하지 않은 태그 입니다.")
 
     ;
 

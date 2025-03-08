@@ -11,10 +11,10 @@ import java.util.List;
 @NoArgsConstructor
 public class WrapMainDTO {
 
-    private List<MainRankingDTO> div1List;
-    private List<MainRankingDTO> div2List;
-    private List<MainRankingDTO> div3List;
+    private List<MainRankingDTO> Div1List;
+    private List<MainRankingDTO> Div2List;
+    private List<MainRankingDTO> Div3List;
 
-    private List<StreakResponseDTO> streakList;
-    private List<MainEventDTO> eventList;
+    private List<StreakResponseDTO> StreakList;
+    private List<MainEventDTO> EventList;
 }

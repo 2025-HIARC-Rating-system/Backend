@@ -1,5 +1,6 @@
 package com.hiarc.Hiting.domain.admin.entity;
 
+
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -15,20 +16,19 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
-public class RecentSeason {
+public class RecentEvent {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "recentSeasonId")
+    @Column(name = "recentEvengId")
     private Long id;
+
+    private int eventHiting;
+    private String eventCategory;
+    private String detailCategory;
 
     private String name;
     private String handle;
-    private Integer tier_level;
-    private Integer divNum;
-    private Integer totalHiting;
-    private LocalDate streakStart;
-    private LocalDate streakEnd;
 
     @CreatedDate
     private LocalDateTime created;
@@ -38,16 +38,12 @@ public class RecentSeason {
     private Students students;
 
     @Builder
-    public RecentSeason(String name, String handle, Integer tier_level, Integer divNum, Integer totalHiting, LocalDate streakStart, LocalDate streakEnd) {
-
+    public RecentEvent(int eventHiting, String eventCategory, String detailCategory, String name, String handle) {
+        this.eventHiting = eventHiting;
+        this.eventCategory = eventCategory;
+        this.detailCategory = detailCategory;
         this.name = name;
         this.handle = handle;
-        this.tier_level = tier_level;
-        this.divNum = divNum;
-        this.totalHiting = totalHiting;
-        this.streakStart = streakStart;
-        this.streakEnd = streakEnd;
-
     }
 
     public void updateStudent(Students student) {

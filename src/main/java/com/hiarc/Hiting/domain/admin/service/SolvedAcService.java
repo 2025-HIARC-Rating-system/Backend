@@ -1,6 +1,8 @@
 package com.hiarc.Hiting.domain.admin.service;
 
 import com.hiarc.Hiting.domain.admin.dto.SolvedResponseTierDTO;
+import com.hiarc.Hiting.domain.admin.dto.SolvedTagDTO;
+import com.hiarc.Hiting.domain.admin.dto.TagCountDTO;
 import com.hiarc.Hiting.domain.hiting.dto.SolvedResponseDTO;
 import com.hiarc.Hiting.global.common.apiPayload.code.status.ErrorStatus;
 import com.hiarc.Hiting.global.common.exception.GeneralException;
@@ -52,5 +54,27 @@ public class SolvedAcService {
             throw new GeneralException(ErrorStatus.OPEN_API_FAIL);
         }
 
+    }
+
+    public int getTagSolvedByHandle(String handle, String detailCategory){
+        String url = "https://solved.ac/api/v3/user/problem_tag_stats?handle=" + handle;
+
+        try {
+            TagCountDTO statsResponse =
+                    restTemplate.getForObject(url, TagCountDTO.class);
+
+            if (statsResponse == null || statsResponse.getItems() == null) {
+                throw new GeneralException(ErrorStatus.OPEN_API_FAIL);
+            }
+
+            return statsResponse.getItems().stream()
+                    .filter(item -> detailCategory.equals(item.getKey()))
+                    .findFirst()
+                    .map(SolvedTagDTO::getSolved)
+                    .orElse(0);
+
+        } catch (RestClientException e) {
+            throw new GeneralException(ErrorStatus.OPEN_API_FAIL);
+        }
     }
 }

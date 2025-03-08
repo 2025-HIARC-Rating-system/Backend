@@ -1,19 +1,16 @@
 package com.hiarc.Hiting.domain.admin.service;
 
 import com.hiarc.Hiting.domain.admin.dto.StudentRequestDTO;
-import com.hiarc.Hiting.domain.admin.entity.Date;
-import com.hiarc.Hiting.domain.admin.entity.RecentSeason;
-import com.hiarc.Hiting.domain.admin.entity.Students;
-import com.hiarc.Hiting.domain.admin.repository.DateRepository;
-import com.hiarc.Hiting.domain.admin.repository.RecentSeasonRepository;
-import com.hiarc.Hiting.domain.admin.repository.StudentRepository;
-import com.hiarc.Hiting.domain.hiting.entity.Event;
+import com.hiarc.Hiting.domain.admin.entity.*;
+import com.hiarc.Hiting.domain.admin.repository.*;
+import com.hiarc.Hiting.domain.hiting.dto.SolvedResponseDTO;
 import com.hiarc.Hiting.domain.hiting.entity.Hiting;
+import com.hiarc.Hiting.domain.hiting.entity.Solved;
 import com.hiarc.Hiting.domain.hiting.entity.Streak;
-import com.hiarc.Hiting.domain.hiting.repository.EventRepository;
 import com.hiarc.Hiting.domain.hiting.repository.HitingRepository;
 import com.hiarc.Hiting.domain.hiting.repository.StreakRepository;
 import com.hiarc.Hiting.global.common.apiPayload.code.status.ErrorStatus;
+import com.hiarc.Hiting.global.common.exception.GeneralException;
 import com.hiarc.Hiting.global.common.exception.NotFoundException;
 import com.hiarc.Hiting.global.enums.DefaultDate;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +22,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import static com.hiarc.Hiting.global.enums.TierCategory.fromLeveltoTierRating;
+
 @Service
 @RequiredArgsConstructor
 public class AdminService {
@@ -32,6 +31,7 @@ public class AdminService {
     private final StudentRepository studentRepository;
     private final SolvedAcService solvedAcService;
     private final RecentSeasonRepository recentSeasonRepository;
+    private final RecentEventRepository recentEventRepository;
     private final HitingRepository hitingRepository;
     private final EventRepository eventRepository;
     private final StreakRepository streakRepository;
@@ -106,6 +106,50 @@ public class AdminService {
         }
     }
 
+    @Scheduled(cron = "0 30 6 * * *", zone = "Asia/Seoul")
+    @Transactional
+    public void changeAllStudentsTagEvent() {
+
+        Date date = dateRepository.findTopByOrderByIdAsc()
+                .orElseThrow(() -> new NotFoundException(ErrorStatus.DATE_NOT_FOUND));
+        String detailCategory = date.getDetailCategory();
+        List<Students> allStudents = studentRepository.findAll();
+        if (allStudents.isEmpty()) {
+            throw new GeneralException(ErrorStatus.MEMBER_NOT_FOUND);
+        }
+
+        for (Students student : allStudents) {
+            String handle = student.getHandle();
+            Event event = eventRepository.findByStudents(student);
+            int countBefore = event.getTagCount();
+            int countToday = solvedAcService.getTagSolvedByHandle(handle, detailCategory); //점수
+            int eventHiting = countToday - countBefore; // 점수 임의로 설정
+            Hiting hiting = hitingRepository.findByStudents(student);
+            hiting.updateEventHiting(eventHiting);
+            event.updateTagCount(countToday);
+        }
+    }
+
+    @Transactional
+    public void initialAllStudentsTagCount() {
+
+        Date date = dateRepository.findTopByOrderByIdAsc()
+                .orElseThrow(() -> new NotFoundException(ErrorStatus.DATE_NOT_FOUND));
+        String detailCategory = date.getDetailCategory();
+        List<Students> allStudents = studentRepository.findAll();
+        if (allStudents.isEmpty()) {
+            throw new GeneralException(ErrorStatus.MEMBER_NOT_FOUND);
+        }
+
+        for (Students student : allStudents) {
+            String handle = student.getHandle();
+            Event event = eventRepository.findByStudents(student);
+            int countToday = solvedAcService.getTagSolvedByHandle(handle, detailCategory);
+            event.updateTagCount(countToday);
+        }
+    }
+
+
     @Transactional
     public void resetRecentSeason() {
 
@@ -113,19 +157,37 @@ public class AdminService {
         List<Students> studentsList = studentRepository.findAll();
         for (Students student : studentsList) {
             Hiting hiting = hitingRepository.findByStudents(student);
-            Event event = eventRepository.findByStudents(student);
             Streak streak = streakRepository.findByStudents(student);
             RecentSeason recent = RecentSeason.builder()
                     .name(student.getName())
                     .handle(student.getHandle())
                     .divNum(student.getDivNum())
                     .totalHiting(hiting.getTotalHiting())
-                    .eventHiting(hiting.getEventHiting())
                     .streakStart(streak.getStreakStart())
                     .streakEnd(streak.getStreakEnd())
                     .build();
 
             recentSeasonRepository.save(recent);
+        }
+    }
+
+    @Transactional
+    public void resetRecentEvent() {
+
+        recentEventRepository.deleteAll();
+        Date date = dateRepository.findTopByOrderByIdAsc()
+                .orElseThrow(() -> new NotFoundException(ErrorStatus.DATE_NOT_FOUND));
+        List<Students> studentsList = studentRepository.findAll();
+        for (Students student : studentsList) {
+            Hiting hiting = hitingRepository.findByStudents(student);
+            RecentEvent recent = RecentEvent.builder()
+                    .eventHiting(hiting.getEventHiting())
+                    .eventCategory(String.valueOf(date.getEventCategory()))
+                    .detailCategory(date.getDetailCategory())
+                    .name(student.getName())
+                    .handle(student.getHandle())
+                    .build();
+            recentEventRepository.save(recent);
         }
     }
 
@@ -141,6 +203,19 @@ public class AdminService {
     }
 
     @Transactional
+    public void eventEndReset(){
+        resetRecentEvent();
+        Date date = dateRepository.findTopByOrderByIdAsc()
+                .orElseThrow(() -> new NotFoundException(ErrorStatus.DATE_NOT_FOUND));
+        date.updateSeasonStart(defaultStart);
+        date.updateSeasonEnd(defaultEnd);
+        hitingRepository.resetSeasonHitingForAll();
+
+    }
+
+
+
+    @Transactional
     public void newTerm(){
         resetRecentSeason();
         Date date = dateRepository.findTopByOrderByIdAsc()
@@ -154,7 +229,6 @@ public class AdminService {
 
     @Transactional
     public void addOneStudent(StudentRequestDTO request) {
-        // test
         Optional<RecentSeason> isExistingStudent = recentSeasonRepository.findByHandle(request.getHandle());
         if (isExistingStudent.isPresent()) {
             RecentSeason existingStudent = isExistingStudent.get();
@@ -177,10 +251,6 @@ public class AdminService {
         }
 
     }
-
-
-
-
 
 
 

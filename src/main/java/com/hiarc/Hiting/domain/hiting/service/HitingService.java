@@ -50,7 +50,10 @@ public class HitingService {
     public void realTimeHitings() {
 
         LocalDateTime todayDate = LocalDateTime.now();
-        if (todayDate.getHour() < 6) { todayDate = todayDate.minusDays(1); }
+        if (todayDate.getHour() < 6) {
+            todayDate = todayDate.minusDays(1);
+        }
+
 
         LocalDateTime defaultStart = DefaultDate.DEFAULT_START.getDateTime();
         LocalDateTime defaultEnd = DefaultDate.DEFAULT_START.getDateTime();
@@ -106,7 +109,7 @@ public class HitingService {
 
             }
 
-            if (isEvent){
+            if (isEvent){ //2배이벤트 기준으로 작성
                 delta = delta *2;
                 hiting.addEventHiting(delta);
             } else {

@@ -1,9 +1,11 @@
 package com.hiarc.Hiting.domain.admin.controller;
 
 import com.hiarc.Hiting.domain.admin.dto.DateDTO;
+import com.hiarc.Hiting.domain.admin.dto.EventResponseDTO;
 import com.hiarc.Hiting.domain.admin.dto.StudentRequestDTO;
 import com.hiarc.Hiting.domain.admin.entity.Date;
 import com.hiarc.Hiting.domain.admin.entity.Students;
+import com.hiarc.Hiting.domain.admin.repository.DateRepository;
 import com.hiarc.Hiting.domain.admin.service.AdminService;
 import com.hiarc.Hiting.domain.admin.service.DateService;
 import com.hiarc.Hiting.domain.hiting.service.HitingService;
@@ -12,6 +14,7 @@ import com.hiarc.Hiting.global.common.apiPayload.code.status.ErrorStatus;
 import com.hiarc.Hiting.global.common.exception.DuplicateStudentsException;
 import com.hiarc.Hiting.global.common.exception.GeneralException;
 import com.hiarc.Hiting.global.common.exception.NotFoundException;
+import com.hiarc.Hiting.global.enums.DefaultDate;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +36,7 @@ public class AdminController implements AdminConfiguration{
     private final AdminService adminService;
     private final DateService dateService;
     private final HitingService hitingService;
+    private final DateRepository dateRepository;
 
 
     @PostMapping("/reset/term")
@@ -61,6 +65,13 @@ public class AdminController implements AdminConfiguration{
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.onSuccess());
     }
 
+    @PostMapping("/reset/event")
+    @Operation(summary = "이벤트 관련 DB 초기화 API", description = "이벤트가 끝났을때 실행. 어드민 페이지 중 지난이벤트 목록 수정, eventHiting값 0으로 초기화")
+    public ResponseEntity<ApiResponse<Void>> resetEvent() {
+        adminService.eventEndReset();
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.onSuccess());
+    }
+
     @PostMapping("/season/new")
     @Operation(summary = "새로운 시즌 기간 등록 API", description = "시즌 기간 등록")
     public ResponseEntity<ApiResponse<Void>> changeSeasonDate(@RequestBody DateDTO request) {
@@ -76,15 +87,15 @@ public class AdminController implements AdminConfiguration{
     }
 
     @PostMapping("/event/new")
-    @Operation(summary = "새로운 이벤트 기간 등록 API", description = "이벤트 기간 등록")
-    public ResponseEntity<ApiResponse<Void>> changeEventDate(@RequestBody DateDTO request) {
+    @Operation(summary = "새로운 이벤트 기간 등록 API", description = "이벤트 기간 및 유형, 상세정보 등록, eventHiting 초기화")
+    public ResponseEntity<ApiResponse<Void>> changeEventDate(@RequestBody EventResponseDTO request) {
         try {
-            dateService.changeEventDate(request);
+            dateService.changeEventAndDate(request);
             return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.onSuccess());
         } catch (NotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.of(ErrorStatus.DATE_NOT_FOUND, null));
         } catch (GeneralException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.of(ErrorStatus.INVALID_DATE_FORMAT, null));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.of(ErrorStatus.MEMBER_NOT_FOUND, null));
         }
 
     }
@@ -116,7 +127,18 @@ public class AdminController implements AdminConfiguration{
     @PostMapping("/first-season")
     @Operation(summary = "최초 시즌 기간 등록 API", description = "DB 삭제시 최초 1회 필요함")
     public ResponseEntity<ApiResponse<Void>> changeFirstSeasonDate() {
-        Date date = Date.builder().build();
+
+        LocalDateTime defaultStart = DefaultDate.DEFAULT_START.getDateTime();
+        LocalDateTime defaultEnd = DefaultDate.DEFAULT_START.getDateTime();
+
+        Date date = Date.builder()
+                .seasonStart(defaultStart)
+                .seasonEnd(defaultEnd)
+                .eventStart(defaultStart)
+                .eventEnd(defaultEnd)
+                .build();
+        dateRepository.save(date);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.onSuccess());
     }
 
@@ -133,5 +155,6 @@ public class AdminController implements AdminConfiguration{
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.of(ErrorStatus.MEMBER_NOT_FOUND, null));
         }
     }
+
 
 }

@@ -1,40 +1,39 @@
 package com.hiarc.Hiting.domain.admin.service;
 
 import com.hiarc.Hiting.domain.admin.dto.DateDTO;
+import com.hiarc.Hiting.domain.admin.dto.EventResponseDTO;
 import com.hiarc.Hiting.domain.admin.entity.Date;
 import com.hiarc.Hiting.domain.admin.repository.DateRepository;
+import com.hiarc.Hiting.domain.hiting.repository.HitingRepository;
 import com.hiarc.Hiting.global.common.apiPayload.code.status.ErrorStatus;
 import com.hiarc.Hiting.global.common.exception.GeneralException;
 import com.hiarc.Hiting.global.common.exception.NotFoundException;
 import com.hiarc.Hiting.global.enums.DefaultDate;
+import com.hiarc.Hiting.global.enums.EventCategory;
+import com.hiarc.Hiting.global.enums.TagCategory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
-
-import static java.time.LocalDateTime.of;
 
 @Service
 @RequiredArgsConstructor
 public class DateService {
 
-    private DateRepository dateRepository;
+    private final AdminService adminService;
+    private final DateRepository dateRepository;
+    private final HitingRepository hitingRepository;
+
     LocalDateTime defaultStart = DefaultDate.DEFAULT_START.getDateTime();
     LocalDateTime defaultEnd = DefaultDate.DEFAULT_START.getDateTime();
 
-    @Autowired
-    public DateService(DateRepository dateRepository) {
-        this.dateRepository = dateRepository;
-    }
 
     @Transactional
     public void changeSeasonDate(DateDTO request) {
-        validateDateRange(request);
+        validateDateRange(request.getStart(), request.getEnd());
         Date date = dateRepository.findTopByOrderByIdAsc()
                 .orElseThrow(() -> new NotFoundException(ErrorStatus.DATE_NOT_FOUND));
 
@@ -45,15 +44,34 @@ public class DateService {
     }
 
     @Transactional
-    public void changeEventDate(DateDTO request) {
-        validateDateRange(request);
+    public void changeEventAndDate(EventResponseDTO request) {
+
+        LocalDateTime start = request.getStart();
+        LocalDateTime end = request.getEnd();
+
+        validateDateRange(start, end);
         Date date = dateRepository.findTopByOrderByIdAsc()
                 .orElseThrow(() -> new NotFoundException(ErrorStatus.DATE_NOT_FOUND));
 
-        date.updateEventStart((request.getStart()));
-        date.updateEventEnd(request.getEnd());
+        date.updateEventStart(start);
+        date.updateEventEnd(end);
 
-        dateRepository.save(date);
+        String eventCategory = request.getEventCategory();
+        String detailCategory = request.getDetailCategory();
+
+        date.updateEventCategory(EventCategory.valueOf(eventCategory));
+
+        if (Objects.equals(eventCategory, EventCategory.TAG_EVENT.toString())) {
+            if (TagCategory.isValidEngTag(detailCategory)) {
+                date.updateDetailCategory(detailCategory);
+                adminService.initialAllStudentsTagCount();
+            } else throw new NotFoundException(ErrorStatus.TAG_INVALID);
+        } else {
+            date.updateDetailCategory(detailCategory);
+        }
+
+        hitingRepository.resetEventHitingForAll();
+
     }
 
     @Transactional
@@ -77,9 +95,9 @@ public class DateService {
     }
 
     //날짜 순서 검증
-    public void validateDateRange(DateDTO request) {
+    public void validateDateRange(LocalDateTime start, LocalDateTime end) {
 
-        if (request.getStart().isAfter(request.getEnd())) {
+        if (start.isAfter(end)) {
             throw new GeneralException(ErrorStatus.INVALID_DATE_FORMAT);
         }
     }

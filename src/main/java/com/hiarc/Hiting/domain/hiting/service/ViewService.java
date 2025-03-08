@@ -6,14 +6,11 @@ import org.springframework.data.util.Pair;
 import com.hiarc.Hiting.domain.admin.entity.Date;
 import com.hiarc.Hiting.domain.admin.entity.Students;
 import com.hiarc.Hiting.domain.admin.repository.DateRepository;
-import com.hiarc.Hiting.domain.admin.repository.RecentSeasonRepository;
 import com.hiarc.Hiting.domain.admin.repository.StudentRepository;
-import com.hiarc.Hiting.domain.admin.service.SolvedAcService;
 import com.hiarc.Hiting.domain.hiting.dto.view.*;
 import com.hiarc.Hiting.domain.hiting.entity.Hiting;
 import com.hiarc.Hiting.domain.hiting.entity.Streak;
 import com.hiarc.Hiting.domain.hiting.repository.HitingRepository;
-import com.hiarc.Hiting.domain.hiting.repository.SolvedRepository;
 import com.hiarc.Hiting.domain.hiting.repository.StreakRepository;
 import com.hiarc.Hiting.global.common.apiPayload.code.status.ErrorStatus;
 import com.hiarc.Hiting.global.common.exception.GeneralException;
@@ -223,32 +220,32 @@ public class ViewService {
         LocalDateTime startEvent = date.getEventStart();
         LocalDateTime endEvent = date.getEventEnd();
 
-        List<MainRankingDTO> div1List = fiveDivRankData(1);
-        List<MainRankingDTO> div2List = fiveDivRankData(2);
-        List<MainRankingDTO> div3List = fiveDivRankData(3);
+        List<MainRankingDTO> Div1List = fiveDivRankData(1);
+        List<MainRankingDTO> Div2List = fiveDivRankData(2);
+        List<MainRankingDTO> Div3List = fiveDivRankData(3);
 
-        List<StreakResponseDTO> streakList = wrapStreakListData().getStreakList();
-        if (streakList.size() > 8) {
-            streakList = streakList.subList(0, 8);
+        List<StreakResponseDTO> StreakList = wrapStreakListData().getStreakList();
+        if (StreakList.size() > 8) {
+            StreakList = StreakList.subList(0, 8);
         }
 
-        List<MainEventDTO> eventList;
+        List<MainEventDTO> EventList;
 
         boolean isEvent = dateService.isEvent(startEvent, endEvent);
 
         if (isEvent) {
-            eventList = eightEventData();
-        } else { eventList = null; }
+            EventList = eightEventData();
+        } else { EventList = null; }
 
 
-        return new WrapMainDTO(div1List, div2List, div3List, streakList, eventList);
+        return new WrapMainDTO(Div1List, Div2List, Div3List, StreakList, EventList);
 
     }
 
     public List<MainRankingDTO> fiveDivRankData(int div){
         List<Students> students = studentsRepository.findByDivNum(div);
         if (students.isEmpty()) {
-            throw new NotFoundException(ErrorStatus.MEMBER_NOT_FOUND);
+            return Collections.emptyList();
         }
 
         List<MainRankingDTO> response = students.stream()

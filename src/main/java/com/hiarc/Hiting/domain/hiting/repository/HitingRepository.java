@@ -15,4 +15,8 @@ public interface HitingRepository extends JpaRepository <Hiting, Long> {
     @Query("UPDATE Hiting h SET h.seasonHiting = 0")
     void resetSeasonHitingForAll();
 
+    @Modifying
+    @Query("UPDATE Hiting h SET h.eventHiting = 0")
+    void resetEventHitingForAll();
+
 }

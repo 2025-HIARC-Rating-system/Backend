@@ -1,6 +1,7 @@
 package com.hiarc.Hiting.domain.admin.controller;
 
 import com.hiarc.Hiting.domain.admin.dto.DateDTO;
+import com.hiarc.Hiting.domain.admin.dto.EventResponseDTO;
 import com.hiarc.Hiting.domain.admin.dto.StudentRequestDTO;
 import com.hiarc.Hiting.global.common.apiPayload.ApiResponse;
 import org.springframework.http.ResponseEntity;
@@ -24,13 +25,18 @@ public interface AdminConfiguration {
     @io.swagger.v3.oas.annotations.responses.ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공")
     })
+    ResponseEntity<ApiResponse<Void>> resetEvent();
+
+    @io.swagger.v3.oas.annotations.responses.ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공")
+    })
     ResponseEntity<ApiResponse<Void>> changeSeasonDate(@RequestBody DateDTO request);
 
 
     @io.swagger.v3.oas.annotations.responses.ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공")
     })
-    ResponseEntity<ApiResponse<Void>> changeEventDate(@RequestBody DateDTO request);
+    ResponseEntity<ApiResponse<Void>> changeEventDate(@RequestBody EventResponseDTO request);
 
     @io.swagger.v3.oas.annotations.responses.ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공")
