@@ -14,7 +14,7 @@ import java.util.List;
 
 @Getter
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED) // 어느 곳에서나 객체를 생성할 수 있는 상황을 막기위
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Students {
 
     @Id

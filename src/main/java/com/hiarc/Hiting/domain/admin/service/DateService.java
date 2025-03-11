@@ -12,7 +12,6 @@ import com.hiarc.Hiting.global.enums.DefaultDate;
 import com.hiarc.Hiting.global.enums.EventCategory;
 import com.hiarc.Hiting.global.enums.TagCategory;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,7 +27,7 @@ public class DateService {
     private final HitingRepository hitingRepository;
 
     LocalDateTime defaultStart = DefaultDate.DEFAULT_START.getDateTime();
-    LocalDateTime defaultEnd = DefaultDate.DEFAULT_START.getDateTime();
+    LocalDateTime defaultEnd = DefaultDate.DEFAULT_END.getDateTime();
 
 
     @Transactional

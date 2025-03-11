@@ -1,7 +1,6 @@
 package com.hiarc.Hiting.domain.hiting.service;
 
 import com.hiarc.Hiting.domain.admin.entity.Students;
-import com.hiarc.Hiting.domain.admin.repository.DateRepository;
 import com.hiarc.Hiting.domain.admin.repository.StudentRepository;
 import com.hiarc.Hiting.domain.hiting.entity.Streak;
 import com.hiarc.Hiting.domain.hiting.repository.StreakRepository;
@@ -24,7 +23,6 @@ public class StreakService {
 
     private final StudentRepository studentsRepository;
     private final StreakRepository streakRepository;
-    private final DateRepository dateRepository;
 
     LocalDate defaultStart = DefaultDate.DEFAULT_START.getDateTime().toLocalDate();
     LocalDate defaultEnd = DefaultDate.DEFAULT_END.getDateTime().toLocalDate();

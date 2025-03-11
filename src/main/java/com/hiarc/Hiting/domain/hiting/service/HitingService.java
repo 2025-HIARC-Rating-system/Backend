@@ -18,19 +18,16 @@ import com.hiarc.Hiting.global.common.apiPayload.code.status.ErrorStatus;
 import com.hiarc.Hiting.global.common.exception.NotFoundException;
 import com.hiarc.Hiting.global.enums.DefaultDate;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cglib.core.Local;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 import static com.hiarc.Hiting.global.enums.TierCategory.fromLeveltoTierRating;
-import static java.time.LocalDateTime.*;
 
 @Service
 @RequiredArgsConstructor
@@ -49,23 +46,18 @@ public class HitingService {
     @Transactional
     public void realTimeHitings() {
 
-        LocalDateTime todayDate = LocalDateTime.now();
-        if (todayDate.getHour() < 6) {
-            todayDate = todayDate.minusDays(1);
-        }
-
+        LocalDateTime today = LocalDateTime.now();
 
         LocalDateTime defaultStart = DefaultDate.DEFAULT_START.getDateTime();
-        LocalDateTime defaultEnd = DefaultDate.DEFAULT_START.getDateTime();
-
+        LocalDateTime defaultEnd = DefaultDate.DEFAULT_END.getDateTime();
 
         Optional<Date> dateOptional = dateRepository.findTopByOrderByIdAsc();
         Date date = dateOptional.orElseThrow(() -> new NotFoundException(ErrorStatus.DATE_NOT_FOUND));
 
         boolean isSeason = (!Objects.equals(date.getSeasonStart(), defaultStart) && !Objects.equals(date.getSeasonEnd(), defaultEnd))
-                && !todayDate.isBefore(date.getSeasonStart()) && !todayDate.isAfter(date.getSeasonEnd());
+                && !today.isBefore(date.getSeasonStart()) && !today.isAfter(date.getSeasonEnd());
         boolean isEvent = (!Objects.equals(date.getSeasonStart(), defaultStart) && !Objects.equals(date.getSeasonEnd(), defaultEnd))
-                && !todayDate.isBefore(date.getEventStart()) && !todayDate.isAfter(date.getEventEnd());
+                && !today.isBefore(date.getEventStart()) && !today.isAfter(date.getEventEnd());
 
 
         List<Students> allStudents = studentsRepository.findAll();
@@ -76,6 +68,7 @@ public class HitingService {
         for (Students student : allStudents) {
 
             String handle = student.getHandle();
+            boolean skipStudent = false;
             List<SolvedResponseDTO> solvedList = solvedAcService.SolvedListByHandle(handle);
             Hiting hiting = hitingRepository.findByStudents(student);
             Streak streak = streakRepository.findByStudents(student);
@@ -100,6 +93,9 @@ public class HitingService {
                 } else {
                     Solved solved = optional.get();
                     SolvedBefore = solved.getEachSolved();
+                    if (SolvedNow < SolvedBefore) {
+                        SolvedNow = SolvedBefore;
+                    } // 값이 더 작을 경우 무시
                     solved.updateEachSolved(SolvedNow);
                 }
 
@@ -109,8 +105,9 @@ public class HitingService {
 
             }
 
-            if (isEvent){ //2배이벤트 기준으로 작성
-                delta = delta *2;
+
+            if (isEvent){ //우선 2배이벤트 기준으로 작성
+                delta = delta*2;
                 hiting.addEventHiting(delta);
             } else {
                 hiting.updateEventHiting(0);
@@ -131,6 +128,9 @@ public class HitingService {
                 hiting.updateSeasonHiting(mainHiting);
             }
 
+            if (today.getHour() < 6) {
+                today = today.minusDays(1);
+            }
 
             if (!streak.isDailyStreak()){
                 boolean dailyStreak = streakService.calculateDailyStreak(student.getTier_level(), hiting.getDailyHiting());
@@ -138,9 +138,11 @@ public class HitingService {
                 if (dailyStreak){
                     streak.updateDailyStreak(true);
                     if (streak.getStreakEnd() == defaultEnd.toLocalDate()) {
-                        streak.updateStreakStart(todayDate.toLocalDate());
+                        streak.updateStreakStart(today.toLocalDate());
+                        streak.updateStreakEnd(today.toLocalDate());
+                    } else {
+                        streak.updateStreakEnd(today.toLocalDate());
                     }
-                    streak.updateStreakEnd(todayDate.toLocalDate());
                 }
             }
 

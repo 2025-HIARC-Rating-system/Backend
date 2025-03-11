@@ -1,6 +1,5 @@
 package com.hiarc.Hiting.domain.hiting.controller;
 
-import com.hiarc.Hiting.domain.admin.controller.AdminConfiguration;
 import com.hiarc.Hiting.domain.hiting.service.HitingService;
 import com.hiarc.Hiting.global.common.apiPayload.ApiResponse;
 import com.hiarc.Hiting.global.common.apiPayload.code.status.ErrorStatus;

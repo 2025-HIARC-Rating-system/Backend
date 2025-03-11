@@ -225,8 +225,8 @@ public class ViewService {
         List<MainRankingDTO> Div3List = fiveDivRankData(3);
 
         List<StreakResponseDTO> StreakList = wrapStreakListData().getStreakList();
-        if (StreakList.size() > 8) {
-            StreakList = StreakList.subList(0, 8);
+        if (StreakList.size() > 6) {
+            StreakList = StreakList.subList(0, 6);
         }
 
         List<MainEventDTO> EventList;

@@ -3,9 +3,7 @@ package com.hiarc.Hiting.domain.admin.service;
 import com.hiarc.Hiting.domain.admin.dto.StudentRequestDTO;
 import com.hiarc.Hiting.domain.admin.entity.*;
 import com.hiarc.Hiting.domain.admin.repository.*;
-import com.hiarc.Hiting.domain.hiting.dto.SolvedResponseDTO;
 import com.hiarc.Hiting.domain.hiting.entity.Hiting;
-import com.hiarc.Hiting.domain.hiting.entity.Solved;
 import com.hiarc.Hiting.domain.hiting.entity.Streak;
 import com.hiarc.Hiting.domain.hiting.repository.HitingRepository;
 import com.hiarc.Hiting.domain.hiting.repository.StreakRepository;
@@ -22,7 +20,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static com.hiarc.Hiting.global.enums.TierCategory.fromLeveltoTierRating;
 
 @Service
 @RequiredArgsConstructor
@@ -38,7 +35,7 @@ public class AdminService {
     private final DateRepository dateRepository;
 
     LocalDateTime defaultStart = DefaultDate.DEFAULT_START.getDateTime();
-    LocalDateTime defaultEnd = DefaultDate.DEFAULT_START.getDateTime();
+    LocalDateTime defaultEnd = DefaultDate.DEFAULT_END.getDateTime();
 
     @Transactional
     public void addStudents(List<StudentRequestDTO> requests) {

@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface DateRepository extends JpaRepository<Date, Long> {
-    Optional<Date> findTopByOrderByIdAsc(); //오름차순 기준 id가 제일 작은거 불러옴
+    Optional<Date> findTopByOrderByIdAsc();
 }

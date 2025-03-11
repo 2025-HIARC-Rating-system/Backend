@@ -1,6 +1,5 @@
 package com.hiarc.Hiting.domain.hiting.controller;
 
-
 import com.hiarc.Hiting.domain.hiting.dto.view.HandleResponseDTO;
 import com.hiarc.Hiting.domain.hiting.dto.view.RankingDTO;
 import com.hiarc.Hiting.domain.hiting.dto.view.WrapMainDTO;
