@@ -71,6 +71,8 @@ public class StreakService {
             betweenDays=0;
         } else betweenDays = (int) ChronoUnit.DAYS.between(Start, End);
 
+        if (betweenDays < 0) { betweenDays = 0;}
+
         return betweenDays;
     }
 
