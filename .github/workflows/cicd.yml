@@ -29,8 +29,14 @@ jobs:
           format: YYYY-MM-DDTHH-mm-ss
           utcOffset: "+09:00"
 
-      - name: Set artifact
-        run: echo "artifact=$(ls ./build/libs)" >> $GITHUB_ENV
+      - name: Prepare Deployment Package
+        run: |
+          mkdir -p deploy
+          cp build/libs/*.jar deploy/application.jar
+          cp Procfile deploy/Procfile
+          cp -r .ebextensions deploy/.ebextensions
+          cp -r .platform deploy/.platform  
+          cd deploy && zip -r deploy.zip .
 
       - name: Beanstalk Deploy
         uses: einaregilsson/beanstalk-deploy@v20
@@ -41,4 +47,4 @@ jobs:
           environment_name: Hiting-env-1
           version_label: github-action-${{steps.current-time.outputs.formattedTime}}
           region: ap-northeast-2
-          deployment_package: ./build/libs/${{env.artifact}}
+          deployment_package: ./deploy/deploy.zip
