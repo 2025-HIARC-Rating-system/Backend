@@ -52,26 +52,27 @@ public class ViewService {
         boolean isSeason = dateService.isSeason(start, end);
         int seasonTotal = calculateSeasonTotal(startDate, endDate, isSeason);
 
-
         List<Streak> allStreaks = streakRepository.findAll();
         List<StreakResponseDTO> streakList = allStreaks.stream()
                 .map(streak -> {
                     Students student = streak.getStudents();
                     LocalDate streakEnd = streak.getStreakEnd();
                     LocalDate streakStart = streak.getStreakStart();
-
                     int totalStreak = 0;
-                    if (streakStart != defaultStart && streakEnd != defaultEnd) {
+                    int seasonStreak = 0;
+
+                    if ( !streakStart.isEqual(defaultStart) && !streakEnd.isEqual(defaultEnd)) {
                         totalStreak = streakService.calculateDays(streakStart, streakEnd);
+                        if (isSeason) {
+                            if( streakStart.isBefore(startDate)) {
+                                seasonStreak = streakService.calculateDays(startDate, streak.getStreakEnd());
+                            }
+                            else { seasonStreak = totalStreak; }
+                        }
                     }
 
-                    int seasonStreak = 0;
-                    if (isSeason) {
-                        if ( streakStart != defaultStart && streakEnd != defaultEnd ) {}
-                        if( streakStart.isBefore(startDate)) {
-                            seasonStreak = streakService.calculateDays(startDate, streak.getStreakEnd());
-                        } else { seasonStreak = totalStreak; }
-                    }
+                    if (streakStart.isEqual(defaultStart)) { streakStart = null; }
+
                     return new StreakResponseDTO(
                             student.getHandle(),
                             student.getTier_level(),
@@ -86,11 +87,10 @@ public class ViewService {
 
         return new WrapStreakListDTO(seasonTotal, streakList);
 
-
     }
 
     @Transactional(readOnly = true)
-    public List<RankingDTO> wrapDivRankData(int div){
+    public List<RankingDTO> divRankList(int div){
         List<Students> students = studentsRepository.findByDivNum(div);
         if (students.isEmpty()) {
             throw new NotFoundException(ErrorStatus.MEMBER_NOT_FOUND);
@@ -115,6 +115,15 @@ public class ViewService {
                 .collect(Collectors.toList());
 
         return response;
+    }
+
+    @Transactional(readOnly = true)
+    public WrapDivListDTO wrapDivListData(int div){
+
+        int streakRatio = streakService.calculateDivStreakRatio(div);
+        List<RankingDTO> rankingList = divRankList(div);
+
+        return new WrapDivListDTO(streakRatio, rankingList);
     }
 
     public int calculateSeasonTotal(LocalDate Start, LocalDate End, boolean isSeason){
@@ -143,7 +152,6 @@ public class ViewService {
         LocalDate streakStart = streak.getStreakStart();
         LocalDate streakEnd = streak.getStreakEnd();
 
-
         boolean isSeason = dateService.isSeason(start, end);
 
         int seasonTotal = 0;
@@ -152,19 +160,19 @@ public class ViewService {
         }
 
         int totalStreak = 0;
-        if (!Objects.equals(streakStart, defaultStart) && !Objects.equals(streakEnd, defaultEnd)) {
-            totalStreak = streakService.calculateDays(streakStart, streakEnd);
-        }
-
         int seasonStreak = 0;
-        if (isSeason && streakStart != defaultStart && streakEnd != defaultEnd) {
-            if (streakStart.isBefore(start.toLocalDate())) {
-                seasonStreak = streakService.calculateDays(start.toLocalDate(), streakEnd);
-            } else {
-                seasonStreak = totalStreak;
+
+        if ( !streakStart.isEqual(defaultStart) && !streakEnd.isEqual(defaultEnd)) {
+            totalStreak = streakService.calculateDays(streakStart, streakEnd);
+            if (isSeason) {
+                if( streakStart.isBefore(start.toLocalDate())) {
+                    seasonStreak = streakService.calculateDays(start.toLocalDate(), streakEnd);
+                }
+                else { seasonStreak = totalStreak; }
             }
         }
 
+        if (streakStart.isEqual(defaultStart)) { streakStart = null; }
 
         int rank = calculateRank(handle, student.getDivNum());
 

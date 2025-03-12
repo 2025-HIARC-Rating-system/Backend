@@ -7,7 +7,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -36,9 +35,6 @@ public class Hiting {
     @OneToOne
     @JoinColumn(name = "studentsId")
     private Students students;
-
-    @CreatedDate
-    private LocalDateTime created;
 
     @LastModifiedDate
     private LocalDateTime modified;

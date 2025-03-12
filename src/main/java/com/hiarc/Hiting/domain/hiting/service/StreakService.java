@@ -47,14 +47,12 @@ public class StreakService {
 
         int streakLimit;
 
-        if (level >= 0 && level <= 5) {
+        if (level >= 0 && level <= 10) {
             streakLimit = 1;
-        } else if (level >= 6 && level <= 10) {
-            streakLimit = 6;
         } else if (level >= 11 && level <= 16) {
-            streakLimit = 12;
+            streakLimit = 6;
         } else if (level >= 17 && level <= 30) {
-            streakLimit = 23;
+            streakLimit = 12;
         } else {
             throw new NotFoundException(ErrorStatus.TIER_LEVEL_INVALID);
         }
@@ -67,13 +65,30 @@ public class StreakService {
 
         int betweenDays;
 
-        if (Start == null || End == null) {
+        if (Start == defaultStart || End == defaultEnd) {
             betweenDays=0;
         } else betweenDays = (int) ChronoUnit.DAYS.between(Start, End);
 
         if (betweenDays < 0) { betweenDays = 0;}
 
         return betweenDays;
+    }
+
+    public int calculateDivStreakRatio(int div) {
+        List<Students> students = studentsRepository.findByDivNum(div);
+        if (students.isEmpty()) {
+            throw new NotFoundException(ErrorStatus.MEMBER_NOT_FOUND);
+        }
+        int studentSize = students.size();
+        int streakNum = 0;
+
+        for (Students student : students) {
+            Streak streak = streakRepository.findByStudents(student);
+            if (!streak.getStreakStart().equals(defaultStart)) {
+                streakNum += 1;
+            }
+        }
+        return (int) ((streakNum * 100.0) / studentSize);
     }
 
 }

@@ -1,9 +1,6 @@
 package com.hiarc.Hiting.domain.hiting.controller;
 
-import com.hiarc.Hiting.domain.hiting.dto.view.HandleResponseDTO;
-import com.hiarc.Hiting.domain.hiting.dto.view.RankingDTO;
-import com.hiarc.Hiting.domain.hiting.dto.view.WrapMainDTO;
-import com.hiarc.Hiting.domain.hiting.dto.view.WrapStreakListDTO;
+import com.hiarc.Hiting.domain.hiting.dto.view.*;
 import com.hiarc.Hiting.domain.hiting.service.ViewService;
 import com.hiarc.Hiting.global.common.apiPayload.ApiResponse;
 import com.hiarc.Hiting.global.common.apiPayload.code.status.ErrorStatus;
@@ -46,10 +43,7 @@ public class ViewController implements ViewConfiguration{
     @Operation(summary = "디비전별로 목차 반환 API", description = "디비전 상세 페이지. seasonHiting이 가장 큰 사람부터 보여줌")
     public ResponseEntity<ApiResponse<?>> divListView(@PathVariable("div") int div){
         try {
-            List<RankingDTO> rankingList = viewService.wrapDivRankData(div);
-
-            Map<String, Object> response = new HashMap<>();
-            response.put("rankingList", rankingList);
+            WrapDivListDTO response = viewService.wrapDivListData(div);
             return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.of(SuccessStatus.OK, response));
         } catch (NotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.of(ErrorStatus.MEMBER_NOT_FOUND, null));

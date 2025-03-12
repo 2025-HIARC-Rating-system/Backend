@@ -8,6 +8,4 @@ spring:
         format_sql: true
     defer-datasource-initialization: true
 
-  h2:
-    console:
-      enabled: true
+
