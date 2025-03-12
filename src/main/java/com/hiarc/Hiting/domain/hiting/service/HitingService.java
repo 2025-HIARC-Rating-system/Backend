@@ -137,7 +137,7 @@ public class HitingService {
 
                 if (dailyStreak){
                     streak.updateDailyStreak(true);
-                    if (streak.getStreakEnd() == defaultEnd.toLocalDate()) {
+                    if (streak.getStreakEnd().equals(defaultEnd.toLocalDate())) {
                         streak.updateStreakStart(today.toLocalDate());
                         streak.updateStreakEnd(today.toLocalDate());
                     } else {

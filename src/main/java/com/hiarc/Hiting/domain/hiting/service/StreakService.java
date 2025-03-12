@@ -65,9 +65,9 @@ public class StreakService {
 
         int betweenDays;
 
-        if (Start == defaultStart || End == defaultEnd) {
+        if (Start.equals(defaultStart) || End.equals(defaultEnd)) {
             betweenDays=0;
-        } else betweenDays = (int) ChronoUnit.DAYS.between(Start, End);
+        } else betweenDays = (int) ChronoUnit.DAYS.between(Start, End) + 1;
 
         if (betweenDays < 0) { betweenDays = 0;}
 
