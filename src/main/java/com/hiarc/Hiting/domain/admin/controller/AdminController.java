@@ -29,7 +29,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/admin")
+@RequestMapping("/admin/rlaehdghks8383")
 @Tag(name = "Admin", description = "관리자 페이지 관련 API ")
 public class AdminController implements AdminConfiguration{
 
