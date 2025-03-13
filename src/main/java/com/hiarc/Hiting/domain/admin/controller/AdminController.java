@@ -49,7 +49,6 @@ public class AdminController implements AdminConfiguration{
             adminService.addStudents(requests);
             hitingService.realTimeHitings();
             return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.onSuccess());
-
         } catch (GeneralException e) {
             return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(ApiResponse.of(ErrorStatus.OPEN_API_FAIL, null));
         } catch (NotFoundException e) {
