@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -42,11 +43,17 @@ public class HitingService {
     private final RecentSeasonRepository recentSeasonRepository;
     private final StreakRepository streakRepository;
 
-    @Scheduled(fixedRate = 900000)
+    @Scheduled(fixedRate = 300000) //5분에 1회 호출
     @Transactional
     public void realTimeHitings() {
 
         LocalDateTime today = LocalDateTime.now();
+
+        int hour = LocalDateTime.now().getHour();
+
+        if (hour > 6 && hour < 7) {
+            return;
+        }
 
         LocalDateTime defaultStart = DefaultDate.DEFAULT_START.getDateTime();
         LocalDateTime defaultEnd = DefaultDate.DEFAULT_END.getDateTime();

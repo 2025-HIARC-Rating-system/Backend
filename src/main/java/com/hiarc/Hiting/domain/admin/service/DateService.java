@@ -103,7 +103,6 @@ public class DateService {
 
     public boolean isSeason(LocalDateTime Start, LocalDateTime End) {
 
-
         LocalDateTime today = LocalDateTime.now();
 
         boolean isSeason = (!Objects.equals(Start, defaultStart) && !Objects.equals(End, defaultEnd))

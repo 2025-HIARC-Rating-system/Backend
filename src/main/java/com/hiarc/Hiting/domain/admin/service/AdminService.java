@@ -33,6 +33,7 @@ public class AdminService {
     private final EventRepository eventRepository;
     private final StreakRepository streakRepository;
     private final DateRepository dateRepository;
+    private final DateService dateService;
 
     LocalDateTime defaultStart = DefaultDate.DEFAULT_START.getDateTime();
     LocalDateTime defaultEnd = DefaultDate.DEFAULT_END.getDateTime();
@@ -109,6 +110,10 @@ public class AdminService {
 
         Date date = dateRepository.findTopByOrderByIdAsc()
                 .orElseThrow(() -> new NotFoundException(ErrorStatus.DATE_NOT_FOUND));
+        if (dateService.isEvent(date.getEventStart(), date.getEventEnd())){
+            return;
+        }
+
         String detailCategory = date.getDetailCategory();
         List<Students> allStudents = studentRepository.findAll();
         if (allStudents.isEmpty()) {
