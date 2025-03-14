@@ -33,7 +33,6 @@ public class AdminService {
     private final EventRepository eventRepository;
     private final StreakRepository streakRepository;
     private final DateRepository dateRepository;
-    private final DateService dateService;
 
     LocalDateTime defaultStart = DefaultDate.DEFAULT_START.getDateTime();
     LocalDateTime defaultEnd = DefaultDate.DEFAULT_END.getDateTime();
@@ -110,7 +109,15 @@ public class AdminService {
 
         Date date = dateRepository.findTopByOrderByIdAsc()
                 .orElseThrow(() -> new NotFoundException(ErrorStatus.DATE_NOT_FOUND));
-        if (dateService.isEvent(date.getEventStart(), date.getEventEnd())){
+
+        LocalDateTime today = LocalDateTime.now();
+        LocalDateTime Start = date.getSeasonStart();
+        LocalDateTime End = date.getSeasonEnd();
+
+        boolean isSeason = (!Objects.equals(Start, defaultStart) && !Objects.equals(End, defaultEnd))
+                && !today.isBefore(Start) && !today.isAfter(End);
+
+        if (isSeason) {
             return;
         }
 
