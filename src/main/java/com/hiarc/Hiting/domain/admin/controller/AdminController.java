@@ -1,17 +1,14 @@
 package com.hiarc.Hiting.domain.admin.controller;
 
-import com.hiarc.Hiting.domain.admin.dto.DateDTO;
-import com.hiarc.Hiting.domain.admin.dto.EventResponseDTO;
-import com.hiarc.Hiting.domain.admin.dto.StudentRequestDTO;
+import com.hiarc.Hiting.domain.admin.dto.*;
 import com.hiarc.Hiting.domain.admin.entity.Date;
-import com.hiarc.Hiting.domain.admin.entity.Students;
 import com.hiarc.Hiting.domain.admin.repository.DateRepository;
 import com.hiarc.Hiting.domain.admin.service.AdminService;
 import com.hiarc.Hiting.domain.admin.service.DateService;
 import com.hiarc.Hiting.domain.hiting.service.HitingService;
 import com.hiarc.Hiting.global.common.apiPayload.ApiResponse;
 import com.hiarc.Hiting.global.common.apiPayload.code.status.ErrorStatus;
-import com.hiarc.Hiting.global.common.exception.DuplicateStudentsException;
+import com.hiarc.Hiting.global.common.apiPayload.code.status.SuccessStatus;
 import com.hiarc.Hiting.global.common.exception.GeneralException;
 import com.hiarc.Hiting.global.common.exception.NotFoundException;
 import com.hiarc.Hiting.global.enums.DefaultDate;
@@ -22,7 +19,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -87,7 +83,7 @@ public class AdminController implements AdminConfiguration{
 
     @PostMapping("/event/new")
     @Operation(summary = "새로운 이벤트 기간 등록 API", description = "이벤트 기간 및 유형, 상세정보 등록, eventHiting 초기화")
-    public ResponseEntity<ApiResponse<Void>> changeEventDate(@RequestBody EventResponseDTO request) {
+    public ResponseEntity<ApiResponse<Void>> changeEventDate(@RequestBody EventDTO request) {
         try {
             dateService.changeEventAndDate(request);
             return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.onSuccess());
@@ -141,6 +137,20 @@ public class AdminController implements AdminConfiguration{
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.onSuccess());
     }
 
+    @GetMapping("/recent-season")
+    @Operation(summary = "지난 시즌 기록 확인 API", description = "지난 시즌 기록 확인 API")
+    public ResponseEntity<ApiResponse<WrapRecentSeasonDTO>> checkRecentSeason() {
+        WrapRecentSeasonDTO response = adminService.wrapRecentSeason();
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.of(SuccessStatus.OK, response));
+    }
+
+    @GetMapping("/recent-event")
+    @Operation(summary = "지난 이벤트 기록 확인 API", description = "지난 이벤트 기록 확인 API")
+    public ResponseEntity<ApiResponse<WrapRecentEventDTO>> checkRecentEvent() {
+        WrapRecentEventDTO response = adminService.wrapRecentEvent();
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.of(SuccessStatus.OK, response));
+    }
+
     @PostMapping("/student/test")
     @Operation(summary = "학회원 1명 등록 API", description = "(테스트용 API) 학회원 정보 등록 + solvedAc에서 티어 가져옴 + div 부여")
     public ResponseEntity<ApiResponse<Void>> addOneStudent(@RequestBody StudentRequestDTO request) {
@@ -154,6 +164,5 @@ public class AdminController implements AdminConfiguration{
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.of(ErrorStatus.MEMBER_NOT_FOUND, null));
         }
     }
-
 
 }

@@ -1,7 +1,8 @@
 package com.hiarc.Hiting.domain.admin.service;
 
-import com.hiarc.Hiting.domain.admin.dto.StudentRequestDTO;
+import com.hiarc.Hiting.domain.admin.dto.*;
 import com.hiarc.Hiting.domain.admin.entity.*;
+import com.hiarc.Hiting.domain.admin.entity.Date;
 import com.hiarc.Hiting.domain.admin.repository.*;
 import com.hiarc.Hiting.domain.hiting.entity.Hiting;
 import com.hiarc.Hiting.domain.hiting.entity.Streak;
@@ -17,8 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 
 @Service
@@ -160,6 +160,7 @@ public class AdminService {
                     .handle(student.getHandle())
                     .divNum(student.getDivNum())
                     .totalHiting(hiting.getTotalHiting())
+                    .seasonHiting(hiting.getSeasonHiting())
                     .streakStart(streak.getStreakStart())
                     .streakEnd(streak.getStreakEnd())
                     .build();
@@ -249,7 +250,79 @@ public class AdminService {
 
     }
 
+    @Transactional(readOnly = true)
+    public WrapRecentSeasonDTO wrapRecentSeason(){
 
+        List<RecentSeasonDTO> div1List = new ArrayList<>();
+        List<RecentSeasonDTO> div2List = new ArrayList<>();
+        List<RecentSeasonDTO> div3List = new ArrayList<>();
+
+        Optional <Date> opDate = dateRepository.findTopByOrderByIdAsc();
+        Date date = opDate.orElse(null);
+
+        LocalDateTime seasonStart = date.getSeasonStart();
+        LocalDateTime seasonEnd = date.getSeasonEnd();
+
+        for (int i = 1; i <= 3; i++) {
+            List<RecentSeason> recentSeasons = Optional.ofNullable(recentSeasonRepository.findByDivNum(i))
+                    .orElse(Collections.emptyList());
+
+            List<RecentSeasonDTO> recentList = recentSeasons.stream()
+                    .map(recentSeason -> new RecentSeasonDTO(
+                            recentSeason.getName(),
+                            recentSeason.getHandle(),
+                            recentSeason.getTier_level(),
+                            recentSeason.getTotalHiting(),
+                            recentSeason.getSeasonHiting(),
+                            recentSeason.getStreakStart(),
+                            recentSeason.getStreakEnd()
+                    ))
+                    .sorted(Comparator.comparing(RecentSeasonDTO::getSeasonHiting,
+                            Comparator.nullsLast(Comparator.reverseOrder())))
+                    .toList();
+
+            if (i == 1) {
+                div1List = recentList;
+            } else if (i == 2) {
+                div2List = recentList;
+            } else if (i == 3) {
+                div3List = recentList;
+            }
+
+        }
+
+        return new WrapRecentSeasonDTO(seasonStart, seasonEnd, div1List, div2List, div3List);
+
+    }
+
+
+    @Transactional(readOnly = true)
+    public WrapRecentEventDTO wrapRecentEvent(){
+
+        Optional <Date> opDate = dateRepository.findTopByOrderByIdAsc();
+        Date date = opDate.orElse(null);
+
+        LocalDateTime eventStart = date.getEventStart();
+        LocalDateTime eventEnd = date.getEventEnd();
+        String eventCategory = String.valueOf(date.getEventCategory());
+        String detailCategory = date.getDetailCategory();
+
+        List<RecentEvent> recentEvents = Optional.of(recentEventRepository.findAll())
+                .orElse(Collections.emptyList());
+        List<RecentEventDTO> eventList = recentEvents.stream()
+                .map(recentEvent -> new RecentEventDTO(
+                        recentEvent.getName(),
+                        recentEvent.getHandle(),
+                        recentEvent.getEventHiting()
+                ))
+                .sorted(Comparator.comparing(RecentEventDTO::getEventHiting,
+                        Comparator.nullsLast(Comparator.reverseOrder())))
+                .toList();
+
+
+        return new WrapRecentEventDTO(eventCategory, detailCategory, eventStart, eventEnd, eventList);
+
+    }
 
 
 }

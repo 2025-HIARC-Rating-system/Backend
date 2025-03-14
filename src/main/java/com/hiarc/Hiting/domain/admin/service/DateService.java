@@ -1,7 +1,7 @@
 package com.hiarc.Hiting.domain.admin.service;
 
 import com.hiarc.Hiting.domain.admin.dto.DateDTO;
-import com.hiarc.Hiting.domain.admin.dto.EventResponseDTO;
+import com.hiarc.Hiting.domain.admin.dto.EventDTO;
 import com.hiarc.Hiting.domain.admin.entity.Date;
 import com.hiarc.Hiting.domain.admin.repository.DateRepository;
 import com.hiarc.Hiting.domain.hiting.repository.HitingRepository;
@@ -43,7 +43,7 @@ public class DateService {
     }
 
     @Transactional
-    public void changeEventAndDate(EventResponseDTO request) {
+    public void changeEventAndDate(EventDTO request) {
 
         LocalDateTime start = request.getStart();
         LocalDateTime end = request.getEnd();

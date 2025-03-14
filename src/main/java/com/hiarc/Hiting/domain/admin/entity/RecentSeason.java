@@ -27,6 +27,7 @@ public class RecentSeason {
     private Integer tier_level;
     private Integer divNum;
     private Integer totalHiting;
+    private Integer seasonHiting;
     private LocalDate streakStart;
     private LocalDate streakEnd;
 
@@ -38,13 +39,14 @@ public class RecentSeason {
     private Students students;
 
     @Builder
-    public RecentSeason(String name, String handle, Integer tier_level, Integer divNum, Integer totalHiting, LocalDate streakStart, LocalDate streakEnd) {
+    public RecentSeason(String name, String handle, Integer tier_level, Integer divNum, Integer totalHiting, Integer seasonHiting, LocalDate streakStart, LocalDate streakEnd) {
 
         this.name = name;
         this.handle = handle;
         this.tier_level = tier_level;
         this.divNum = divNum;
         this.totalHiting = totalHiting;
+        this.seasonHiting = seasonHiting;
         this.streakStart = streakStart;
         this.streakEnd = streakEnd;
 

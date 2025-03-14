@@ -1,6 +1,5 @@
 package com.hiarc.Hiting.domain.admin.dto;
 
-import com.hiarc.Hiting.domain.admin.entity.Date;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -8,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @AllArgsConstructor
-public class EventResponseDTO {
+public class EventDTO {
 
     private LocalDateTime start;
     private LocalDateTime end;

@@ -1,8 +1,6 @@
 package com.hiarc.Hiting.domain.admin.controller;
 
-import com.hiarc.Hiting.domain.admin.dto.DateDTO;
-import com.hiarc.Hiting.domain.admin.dto.EventResponseDTO;
-import com.hiarc.Hiting.domain.admin.dto.StudentRequestDTO;
+import com.hiarc.Hiting.domain.admin.dto.*;
 import com.hiarc.Hiting.global.common.apiPayload.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,7 +34,7 @@ public interface AdminConfiguration {
     @io.swagger.v3.oas.annotations.responses.ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공")
     })
-    ResponseEntity<ApiResponse<Void>> changeEventDate(@RequestBody EventResponseDTO request);
+    ResponseEntity<ApiResponse<Void>> changeEventDate(@RequestBody EventDTO request);
 
     @io.swagger.v3.oas.annotations.responses.ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공")
@@ -57,6 +55,16 @@ public interface AdminConfiguration {
              @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공")
      })
      ResponseEntity<ApiResponse<Void>> addOneStudent(@RequestBody StudentRequestDTO request);
+
+    @io.swagger.v3.oas.annotations.responses.ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공")
+    })
+    ResponseEntity<ApiResponse<WrapRecentSeasonDTO>> checkRecentSeason();
+
+    @io.swagger.v3.oas.annotations.responses.ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공")
+    })
+    ResponseEntity<ApiResponse<WrapRecentEventDTO>> checkRecentEvent();
 
 
 
