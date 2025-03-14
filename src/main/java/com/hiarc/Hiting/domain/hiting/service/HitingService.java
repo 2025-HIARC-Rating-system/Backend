@@ -22,6 +22,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -134,9 +135,10 @@ public class HitingService {
                 hiting.updateSeasonHiting(mainHiting);
             }
 
-            if (today.getHour() < 6) {
+            if (hour < 6) {
                 today = today.minusDays(1);
             }
+            LocalDate todayDate = today.toLocalDate();
 
             if (!streak.isDailyStreak()){
                 boolean dailyStreak = streakService.calculateDailyStreak(student.getTier_level(), hiting.getDailyHiting());
@@ -144,10 +146,10 @@ public class HitingService {
                 if (dailyStreak){
                     streak.updateDailyStreak(true);
                     if (streak.getStreakEnd().equals(defaultEnd.toLocalDate())) {
-                        streak.updateStreakStart(today.toLocalDate());
-                        streak.updateStreakEnd(today.toLocalDate());
+                        streak.updateStreakStart(todayDate);
+                        streak.updateStreakEnd(todayDate);
                     } else {
-                        streak.updateStreakEnd(today.toLocalDate());
+                        streak.updateStreakEnd(todayDate);
                     }
                 }
             }
