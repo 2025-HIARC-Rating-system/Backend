@@ -106,7 +106,7 @@ public class HitingService {
             }
 
 
-            if (isEvent){ //우선 2배이벤트 기준으로 작성
+            if (isEvent){
                 delta = delta*2;
                 hiting.addEventHiting(delta);
             } else {

@@ -106,8 +106,6 @@ public class DateService {
 
         LocalDateTime today = LocalDateTime.now();
 
-        if (today.getHour() < 6) { today = today.minusDays(1); }
-
         boolean isSeason = (!Objects.equals(Start, defaultStart) && !Objects.equals(End, defaultEnd))
                 && !today.isBefore(Start) && !today.isAfter(End);
 
@@ -118,8 +116,6 @@ public class DateService {
 
 
         LocalDateTime today = LocalDateTime.now();
-
-        if (today.getHour() < 6) { today = today.minusDays(1); }
 
         boolean isEvent = (!Objects.equals(Start, defaultStart) && !Objects.equals(End, defaultEnd))
                 && !today.isBefore(Start) && !today.isAfter(End);
